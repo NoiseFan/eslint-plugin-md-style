@@ -1,5 +1,9 @@
 # eslint-plugin-md-style
 
+[![npm version](https://img.shields.io/npm/v/eslint-plugin-md-style)](https://www.npmjs.com/package/eslint-plugin-md-style)
+[![npm downloads](https://img.shields.io/npm/dm/eslint-plugin-md-style)](https://www.npmjs.com/package/eslint-plugin-md-style)
+[![codecov](https://codecov.io/gh/NoiseFan/eslint-plugin-md-style/graph/badge.svg)](https://codecov.io/gh/NoiseFan/eslint-plugin-md-style)
+
 ESLint plugin for enforcing style rules in Markdown-based documentation.
 
 ## Overview

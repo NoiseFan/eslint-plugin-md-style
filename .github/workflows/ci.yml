@@ -3,6 +3,10 @@ name: CI
 on:
   pull_request:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -26,6 +30,26 @@ jobs:
 
       - name: Lint
         run: nr lint
+
+  pr-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Setup
+        run: npm i -g @antfu/ni
+
+      - name: Install
+        run: nci
 
       - name: Typecheck
         run: nr typecheck
@@ -55,5 +79,13 @@ jobs:
       - name: Install
         run: nci
 
-      - name: unit tests
+      - name: Unit tests
         run: nr test:cov
+
+      - name: Report coverage
+        uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: ./coverage/clover.xml
+          fail_ci_if_error: true
+          verbose: true

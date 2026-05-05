@@ -2,19 +2,72 @@
 
 ESLint plugin for enforcing style rules in Markdown-based documentation.
 
-## Install
+## Overview
+
+`eslint-plugin-md-style` provides Markdown-specific style rules and ready-to-use flat configs for `**/*.md` files.
+
+It currently ships:
+
+- A `recommended` config for typical documentation linting
+- An `all` config that enables every rule in this plugin
+- Markdown language registration built on top of `@eslint/markdown`
+
+## Quick Start
+
+Install the required packages:
 
 ```bash
 pnpm add -D eslint @eslint/markdown eslint-plugin-md-style
 ```
 
-`@eslint/markdown` is required because this plugin registers Markdown processors and languages on top of it.
+Then enable the recommended config in your ESLint flat config:
+
+```ts
+import mdStyle from 'eslint-plugin-md-style'
+
+export default [
+  mdStyle.configs.recommended,
+]
+```
+
+If you want full enforcement, replace `mdStyle.configs.recommended` with `mdStyle.configs.all`.
 
 ## Usage
 
-Use the built-in flat configs to lint Markdown files directly.
+### Manual Flat Config Usage
 
-### With `@antfu/eslint-config`
+Use the built-in preset directly:
+
+```ts
+import mdStyle from 'eslint-plugin-md-style'
+
+export default [
+  mdStyle.configs.recommended,
+]
+```
+
+You can also enable the plugin manually and choose rules one by one:
+
+```ts
+import mdStyle from 'eslint-plugin-md-style'
+
+export default [
+  {
+    files: ['**/*.md'],
+    plugins: {
+      'md-style': mdStyle,
+    },
+    language: 'md-style/commonmark',
+    rules: {
+      'md-style/space-between-link': 'error',
+      'md-style/valid-heading-anchor': 'error',
+    },
+  },
+]
+```
+
+<details>
+<summary>Usage with <code>@antfu/eslint-config</code></summary>
 
 ```ts
 import antfu from '@antfu/eslint-config'
@@ -29,9 +82,7 @@ export default antfu(
 )
 ```
 
-If you want full enforcement instead of the default recommended preset, replace `plugin.configs.recommended` with `plugin.configs.all`.
-
-For partial adoption, you can start from `recommended` and override individual rules:
+For partial adoption, start from `recommended` and override individual rules:
 
 ```ts
 import antfu from '@antfu/eslint-config'
@@ -52,61 +103,20 @@ export default antfu(
 )
 ```
 
-If you only want to enable part of the plugin, register the plugin and select rules manually:
-
-```ts
-import antfu from '@antfu/eslint-config'
-import plugin from 'eslint-plugin-md-style'
-
-export default antfu(
-  {
-    formatters: true,
-    markdown: true,
-  },
-  {
-    files: ['**/*.md'],
-    plugins: {
-      'md-style': plugin,
-    },
-    language: 'md-style/commonmark',
-    rules: {
-      'md-style/space-between-link': 'error',
-      'md-style/valid-heading-anchor': 'error',
-    },
-  },
-)
-```
-
-### `recommended`
-
-```ts
-import plugin from 'eslint-plugin-md-style'
-
-export default [
-  plugin.configs.recommended,
-]
-```
-
-`recommended` is the default entry for production use. It targets `**/*.md`, uses the plugin's `commonmark` language, and enables the stable rules currently recommended by this package.
-
-### `all`
-
-```ts
-import plugin from 'eslint-plugin-md-style'
-
-export default [
-  plugin.configs.all,
-]
-```
-
-`all` enables every rule exported by this plugin. It is useful when you want full enforcement or when checking rule behavior during development.
+</details>
 
 ## Rules
 
 | Rule | Included in `recommended` | Autofix |
 | --- | --- | --- |
-| `md-style/space-between-link` | Yes | Yes |
-| `md-style/valid-heading-anchor` | Yes | Yes |
+| `md-style/space-between-link` | ✅ | 🔧 |
+| `md-style/valid-heading-anchor` | ✅ | 🔧 |
+
+## Why `@eslint/markdown` Is Required
+
+This plugin builds on top of `@eslint/markdown` rather than replacing it.
+
+`@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/commonmark` language used by the bundled configs.
 
 ## License
 

@@ -1,0 +1,108 @@
+import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
+import type { RuleContext } from '../../types'
+import { createRule, getNodePosition } from '../../utils'
+import { getNodeContext, isNestedInlineElement } from '../../utils/ast'
+import {
+  getSpaceContext,
+  INLINE_SPACE_MESSAGE_IDS as MESSAGE_IDS,
+  validateSpace,
+} from '../../utils/rules/inline-element'
+
+export const RULE_NAME = 'space-between-inline-elemnt'
+
+type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
+type Options = []
+type InlineElementNode = Link | Image | InlineCode | Emphasis | Strong
+
+const BEFORE_INLINE_ELEMENT_MESSAGE_IDS = new Set<MessageIds>([
+  MESSAGE_IDS.missingSpaceBefore,
+  MESSAGE_IDS.multipleSpacesBefore,
+  MESSAGE_IDS.multipleSpacesAfterPunctuation,
+  MESSAGE_IDS.unexpectedSpaceBefore,
+])
+
+/**
+ * Checks one selected inline element and reports the fix range around it.
+ */
+function checkInlineElement(context: RuleContext<MessageIds, Options>, node: InlineElementNode): void {
+  const { position, start, end } = getNodePosition(node)
+  if (!position)
+    return
+
+  const nodeContext = getNodeContext(context, node)
+  if (isNestedInlineElement(nodeContext))
+    return
+
+  const spaceContext = getSpaceContext(nodeContext)
+  const messageId = validateSpace(nodeContext)
+  if (!messageId)
+    return
+
+  if (BEFORE_INLINE_ELEMENT_MESSAGE_IDS.has(messageId) && spaceContext.prev) {
+    const { count } = spaceContext.prev.whiteSpace
+    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceBefore ? '' : ' '
+
+    context.report({
+      node,
+      messageId,
+      fix(fixer) {
+        return fixer.replaceTextRange([start - count, start], replaceText)
+      },
+    })
+    return
+  }
+
+  if (spaceContext.next) {
+    const { count } = spaceContext.next.whiteSpace
+    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceAfter ? '' : ' '
+
+    context.report({
+      node,
+      messageId,
+      fix(fixer) {
+        return fixer.replaceTextRange([end, end + count], replaceText)
+      },
+    })
+  }
+}
+
+export default createRule<Options, MessageIds>({
+  name: RULE_NAME,
+  meta: {
+    type: 'layout',
+    docs: {
+      description: 'Enforce spacing around Markdown inline elements.',
+    },
+    messages: {
+      missingSpaceBefore: 'A space is required before the inline element.',
+      missingSpaceAfter: 'A space is required after the inline element.',
+      multipleSpacesBefore: 'Use exactly one space before the inline element.',
+      multipleSpacesAfter: 'Use exactly one space after the inline element.',
+      multipleSpacesAfterPunctuation: 'Use one space after punctuation.',
+      unexpectedSpaceBefore: 'Do not add a space between punctuation and the inline element.',
+      unexpectedSpaceAfter: 'Do not add a space between the inline element and punctuation.',
+    },
+    fixable: 'whitespace',
+    schema: [],
+  },
+  defaultOptions: [],
+  create(context) {
+    return {
+      link(node: Link) {
+        checkInlineElement(context, node)
+      },
+      image(node: Image) {
+        checkInlineElement(context, node)
+      },
+      inlineCode(node: InlineCode) {
+        checkInlineElement(context, node)
+      },
+      emphasis(node: Emphasis) {
+        checkInlineElement(context, node)
+      },
+      strong(node: Strong) {
+        checkInlineElement(context, node)
+      },
+    }
+  },
+})

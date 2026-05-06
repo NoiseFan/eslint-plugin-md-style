@@ -1,7 +1,15 @@
-import type { SpaceContext } from '../../types/link'
+import type { SpaceContext } from '../../types/inline-element'
 import { describe, expect, it } from 'vitest'
 import { getParsedLinkContext } from '../markdown'
-import { getSpaceContext, getWhiteSpace, isCustomContainerMarker, isDashPunctuation, isFullwidthPunctuation, isHalfwidthPunctuation, isPunctuation } from './link'
+import {
+  getSpaceContext,
+  getWhiteSpace,
+  isCustomContainerMarker,
+  isDashPunctuation,
+  isFullwidthPunctuation,
+  isHalfwidthPunctuation,
+  isPunctuation,
+} from './inline-element'
 
 describe('isFullwidthPunctuation', () => {
   it('should return true for fullwidth punctuation', () => {

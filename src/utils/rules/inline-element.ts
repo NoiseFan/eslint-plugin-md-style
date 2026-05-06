@@ -1,17 +1,23 @@
-import type { InlineCode, Link, PhrasingContent } from 'mdast'
-import type { LinkSpaceIssue, PositionOptions, SpaceContext } from '../../types/link'
+import type { PhrasingContent } from 'mdast'
+import type {
+  AdjacentTextContext,
+  InlineElement,
+  InlineElementSpaceIssue,
+  PositionOptions,
+  SpaceContext,
+} from '../../types/inline-element'
 import type { NodeContextReturnType } from '../ast'
-import { hasChildren } from '../ast'
+import { hasChildren, isInlineElement } from '../ast'
 import { getLikeAnchor } from './anchor'
 
-export const LINK_SPACE_MESSAGE_IDS = {
-  missingSpaceBeforeLink: 'missingSpaceBeforeLink',
-  missingSpaceAfterLink: 'missingSpaceAfterLink',
-  multipleSpacesBeforeLink: 'multipleSpacesBeforeLink',
-  multipleSpacesAfterLink: 'multipleSpacesAfterLink',
+export const INLINE_SPACE_MESSAGE_IDS = {
+  missingSpaceBefore: 'missingSpaceBefore',
+  missingSpaceAfter: 'missingSpaceAfter',
+  multipleSpacesBefore: 'multipleSpacesBefore',
+  multipleSpacesAfter: 'multipleSpacesAfter',
   multipleSpacesAfterPunctuation: 'multipleSpacesAfterPunctuation',
-  unexpectedSpaceBeforeLink: 'unexpectedSpaceBeforeLink',
-  unexpectedSpaceAfterLink: 'unexpectedSpaceAfterLink',
+  unexpectedSpaceBefore: 'unexpectedSpaceBefore',
+  unexpectedSpaceAfter: 'unexpectedSpaceAfter',
 } as const
 
 export const OPENING_PAIRED_PUNCTUATION = new Set(['(', '[', '{', '<', '（', '【', '《', '“', '‘'])
@@ -142,15 +148,13 @@ export function hasPunctuation(str: string | undefined, position: PositionOption
 /**
  * Gets the character adjacent to the start or end of a string.
  */
-function getAdjacentChar(str: string | undefined, position: PositionOptions): string | undefined {
+export function getAdjacentChar(str: string | undefined, position: PositionOptions): string | undefined {
   if (!str)
     return undefined
 
   str = str.trim()
   return position === 'head' ? str[0] : str[str.length - 1]
 }
-
-type AdjacentTextContext = NonNullable<SpaceContext['prev']>
 
 /**
  * Extracts the plain-text value of a phrasing node.
@@ -173,7 +177,7 @@ function getNodeValue(node: PhrasingContent | undefined): string | undefined {
 /**
  * Gets whitespace and punctuation information for text adjacent to a link or inline code node.
  */
-export function getSpaceContext(nodeContext: NodeContextReturnType<Link | InlineCode>): SpaceContext {
+export function getSpaceContext(nodeContext: NodeContextReturnType<PhrasingContent>): SpaceContext {
   const { prev, next } = nodeContext
   const prevValue = getNodeValue(prev)
   const nextValue = getNodeValue(next)
@@ -197,11 +201,11 @@ export function getSpaceContext(nodeContext: NodeContextReturnType<Link | Inline
 /**
  * Validates whether a spacing run contains exactly one required space.
  */
-function validateSingleRequiredSpace(
+export function validateSingleRequiredSpace<T extends string>(
   count: number,
-  missingSpaceMessageId: LinkSpaceIssue,
-  multipleSpacesMessageId: LinkSpaceIssue,
-): LinkSpaceIssue | undefined {
+  missingSpaceMessageId: T,
+  multipleSpacesMessageId: T,
+): T | undefined {
   if (count < 1)
     return missingSpaceMessageId
   if (count > 1)
@@ -209,13 +213,15 @@ function validateSingleRequiredSpace(
 }
 
 /**
- * Validates the spacing before a link when the previous character is punctuation.
+ * Validates spacing before an inline node when the previous character is punctuation.
  */
-function validateSpaceBeforeLinkAfterPunctuation(context: AdjacentTextContext): LinkSpaceIssue | undefined {
+export function validateBeforePunctuation(
+  context: AdjacentTextContext,
+): InlineElementSpaceIssue | undefined {
   // opening paired punctuation
   if (OPENING_PAIRED_PUNCTUATION.has(getAdjacentChar(context.value, 'tail') || '')) {
     if (context.whiteSpace.count > 0)
-      return LINK_SPACE_MESSAGE_IDS.unexpectedSpaceBeforeLink
+      return INLINE_SPACE_MESSAGE_IDS.unexpectedSpaceBefore
     return
   }
 
@@ -223,81 +229,92 @@ function validateSpaceBeforeLinkAfterPunctuation(context: AdjacentTextContext): 
   if (context.punctuationType === 'half') {
     return validateSingleRequiredSpace(
       context.whiteSpace.count,
-      LINK_SPACE_MESSAGE_IDS.missingSpaceBeforeLink,
-      LINK_SPACE_MESSAGE_IDS.multipleSpacesAfterPunctuation,
+      INLINE_SPACE_MESSAGE_IDS.missingSpaceBefore,
+      INLINE_SPACE_MESSAGE_IDS.multipleSpacesAfterPunctuation,
     )
   }
 
   if (context.whiteSpace.count > 0)
-    return LINK_SPACE_MESSAGE_IDS.unexpectedSpaceBeforeLink
+    return INLINE_SPACE_MESSAGE_IDS.unexpectedSpaceBefore
 }
 
 /**
- * Validates the spacing between the previous node and the current link.
+ * Validates the spacing between the previous node and the current inline node.
  */
-function validateSpaceBeforeLink(context: AdjacentTextContext): LinkSpaceIssue | undefined {
+export function validateSpaceBeforeNode(
+  context: AdjacentTextContext,
+): InlineElementSpaceIssue | undefined {
   if (context.hasPunctuation)
-    return validateSpaceBeforeLinkAfterPunctuation(context)
+    return validateBeforePunctuation(context)
 
   return validateSingleRequiredSpace(
     context.whiteSpace.count,
-    LINK_SPACE_MESSAGE_IDS.missingSpaceBeforeLink,
-    LINK_SPACE_MESSAGE_IDS.multipleSpacesBeforeLink,
+    INLINE_SPACE_MESSAGE_IDS.missingSpaceBefore,
+    INLINE_SPACE_MESSAGE_IDS.multipleSpacesBefore,
   )
 }
 
 /**
- * Validates the spacing after a link when the next character is punctuation.
+ * Validates spacing after an inline node when the next character is punctuation.
  */
-function validateSpaceAfterLinkBeforePunctuation(context: AdjacentTextContext): LinkSpaceIssue | undefined {
+export function validateSpaceAfterPunctuation(
+  context: AdjacentTextContext,
+): InlineElementSpaceIssue | undefined {
   if (isDashPunctuation(getAdjacentChar(context.value, 'head'))) {
     return validateSingleRequiredSpace(
       context.whiteSpace.count,
-      LINK_SPACE_MESSAGE_IDS.missingSpaceAfterLink,
-      LINK_SPACE_MESSAGE_IDS.multipleSpacesAfterLink,
+      INLINE_SPACE_MESSAGE_IDS.missingSpaceAfter,
+      INLINE_SPACE_MESSAGE_IDS.multipleSpacesAfter,
     )
   }
-  // ignore element
+
+  if (CLOSING_PAIRED_PUNCTUATION.has(getAdjacentChar(context.value, 'head') || '')) {
+    if (context.whiteSpace.count > 0)
+      return INLINE_SPACE_MESSAGE_IDS.unexpectedSpaceAfter
+    return
+  }
+
   if (getLikeAnchor(context.value) || isCustomContainerMarker(context.value))
     return
 
   if (context.whiteSpace.count > 0)
-    return LINK_SPACE_MESSAGE_IDS.unexpectedSpaceAfterLink
+    return INLINE_SPACE_MESSAGE_IDS.unexpectedSpaceAfter
 }
 
 /**
- * Validates the spacing between the current link and the next node.
+ * Validates the spacing between the current inline node and the next node.
  */
-function validateSpaceAfterLink(context: AdjacentTextContext): LinkSpaceIssue | undefined {
+export function validateSpaceAfterNode(
+  context: AdjacentTextContext,
+): InlineElementSpaceIssue | undefined {
   if (context.hasPunctuation)
-    return validateSpaceAfterLinkBeforePunctuation(context)
+    return validateSpaceAfterPunctuation(context)
 
   return validateSingleRequiredSpace(
     context.whiteSpace.count,
-    LINK_SPACE_MESSAGE_IDS.missingSpaceAfterLink,
-    LINK_SPACE_MESSAGE_IDS.multipleSpacesAfterLink,
+    INLINE_SPACE_MESSAGE_IDS.missingSpaceAfter,
+    INLINE_SPACE_MESSAGE_IDS.multipleSpacesAfter,
   )
 }
 
 /**
- * Validates whether the spacing around a link node follows the typography rules.
- * - Regular text and links should be separated by a single space.
- * - Fullwidth punctuation usually touches the link without spaces.
- * - Halfwidth punctuation, hyphens, and similar cases are handled by dedicated rules.
+ * Validates whether the spacing around an inline element follows the typography rules.
+ * - Regular text and selected inline elements should be separated by one space.
+ * - Fullwidth punctuation and paired punctuation usually touch inline elements without spaces.
+ * - Adjacent selected inline elements are handled by the following element to avoid duplicate fixes.
  */
-export function validateSpace(nodeContext: NodeContextReturnType<Link>): LinkSpaceIssue | undefined {
+export function validateSpace(nodeContext: NodeContextReturnType<InlineElement>): InlineElementSpaceIssue | undefined {
   const { prev, next } = nodeContext
   const spaceContext = getSpaceContext(nodeContext)
 
-  if (!prev || !spaceContext.prev)
+  if (prev && spaceContext.prev) {
+    const beforeIssue = validateSpaceBeforeNode(spaceContext.prev)
+    if (beforeIssue)
+      return beforeIssue
+  }
+
+  if (!next || !spaceContext.next || isInlineElement(next))
     return
 
-  const beforeLinkIssue = validateSpaceBeforeLink(spaceContext.prev)
-  if (beforeLinkIssue)
-    return beforeLinkIssue
-
-  if (!next || !spaceContext.next)
-    return
-
-  return validateSpaceAfterLink(spaceContext.next)
+  return validateSpaceAfterNode(spaceContext.next)
 }

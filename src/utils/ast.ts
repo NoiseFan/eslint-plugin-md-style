@@ -1,5 +1,6 @@
 import type { Link, Nodes, Paragraph, Parents, PhrasingContent, RootContent, Text } from 'mdast'
 import type { NodeContextReturnType, RuleContextWithAncestors } from '../types/ast'
+import type { InlineElement } from '../types/inline-element'
 
 export type {
   NodeContextReturnType,
@@ -39,6 +40,23 @@ export function isTextNode(node: Nodes | undefined): node is Text {
  */
 export function isLinkNode(node: Nodes): node is Link {
   return node.type === 'link'
+}
+
+const INLINE_ELEMENT_TYPES = new Set(['link', 'image', 'inlineCode', 'emphasis', 'strong'])
+
+/**
+ * Checks whether a phrasing node is one of the selected inline element targets.
+ */
+export function isInlineElement(node: PhrasingContent | Parents | undefined): node is InlineElement {
+  return !!node && INLINE_ELEMENT_TYPES.has(node.type)
+}
+
+/**
+ * Checks whether the current inline element is nested inside another selected inline element.
+ */
+export function isNestedInlineElement(nodeContext: NodeContextReturnType<InlineElement>): boolean {
+  const { parent } = nodeContext
+  return isInlineElement(parent)
 }
 
 /* ==================== Tree traversal ==================== */

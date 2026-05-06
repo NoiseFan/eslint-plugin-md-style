@@ -63,7 +63,7 @@ export default [
     },
     language: 'md-style/commonmark',
     rules: {
-      'md-style/space-between-link': 'error',
+      'md-style/space-between-inline-elemnt': 'error',
       'md-style/valid-heading-anchor': 'error',
     },
   },
@@ -113,7 +113,7 @@ export default antfu(
 
 | Rule | Included in `recommended` | Autofix |
 | --- | --- | --- |
-| `md-style/space-between-link` | ✅ | 🔧 |
+| `md-style/space-between-inline-elemnt` | ✅ | 🔧 |
 | `md-style/valid-heading-anchor` | ✅ | 🔧 |
 
 ## Why `@eslint/markdown` Is Required

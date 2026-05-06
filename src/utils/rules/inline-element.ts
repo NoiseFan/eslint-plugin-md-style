@@ -201,7 +201,7 @@ export function getSpaceContext(nodeContext: NodeContextReturnType<PhrasingConte
 /**
  * Validates whether a spacing run contains exactly one required space.
  */
-export function validateSingleRequiredSpace<T extends string>(
+export function validateSingleRequiredSpace<T extends InlineElementSpaceIssue>(
   count: number,
   missingSpaceMessageId: T,
   multipleSpacesMessageId: T,

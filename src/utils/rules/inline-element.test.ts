@@ -9,6 +9,7 @@ import {
   isFullwidthPunctuation,
   isHalfwidthPunctuation,
   isPunctuation,
+  validateSpaceAfterPunctuation,
 } from './inline-element'
 
 describe('isFullwidthPunctuation', () => {
@@ -183,5 +184,25 @@ describe('getSpaceContext', () => {
       prev: { value: 'read  ', whiteSpace: { count: 2, start: 4, end: 6 }, hasPunctuation: false, punctuationType: 'half' },
       next: { value: '  now', whiteSpace: { count: 2, start: 0, end: 2 }, hasPunctuation: false, punctuationType: 'half' },
     })
+  })
+})
+
+describe('validateSpaceAfterPunctuation', () => {
+  it('should allow inline elements to touch closing paired punctuation', () => {
+    expect(validateSpaceAfterPunctuation({
+      value: ') next',
+      whiteSpace: { count: 0, start: 0, end: 0 },
+      hasPunctuation: true,
+      punctuationType: 'half',
+    })).toBeUndefined()
+  })
+
+  it('should report unexpected spaces before closing paired punctuation', () => {
+    expect(validateSpaceAfterPunctuation({
+      value: ' ) next',
+      whiteSpace: { count: 1, start: 0, end: 1 },
+      hasPunctuation: true,
+      punctuationType: 'half',
+    })).toBe('unexpectedSpaceAfter')
   })
 })

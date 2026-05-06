@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { calcAnchorPositionCompensate, getLikeAnchor, isStrictAnchor, normalizeAnchor } from './anchor'
+import { calcAnchorPositionCompensate, getAnchor, getLikeAnchor, isStrictAnchor, normalizeAnchor } from './anchor'
+
+describe('getAnchor', () => {
+  it('should extract anchor content from strict and loose anchors', () => {
+    expect(getAnchor('{#chinese-title}')).toBe('chinese-title')
+    expect(getAnchor('#intro')).toBe('intro')
+  })
+
+  it('should return null when there is no anchor content', () => {
+    expect(getAnchor('中文标题')).toBeNull()
+    expect(getAnchor('#')).toBeNull()
+  })
+})
 
 describe('isStrictAnchor', () => {
   it('should return true for lowercase anchors', () => {
@@ -53,6 +65,10 @@ describe('getLikeAnchor', () => {
     for (const ele of data) {
       expect(getLikeAnchor(ele)).toBeNull()
     }
+  })
+
+  it('should return null for undefined input', () => {
+    expect(getLikeAnchor(undefined)).toBeNull()
   })
 })
 

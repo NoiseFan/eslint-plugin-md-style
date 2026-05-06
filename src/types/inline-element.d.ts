@@ -2,7 +2,7 @@ import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
 import type { INLINE_SPACE_MESSAGE_IDS } from '../utils/rules/inline-element'
 
 /**
- * The Markdown inline element node types selected by space-between-inline-elemnt.
+ * The Markdown inline element node types selected by space-between-inline-element.
  */
 export type InlineElement = Link | Image | InlineCode | Emphasis | Strong
 

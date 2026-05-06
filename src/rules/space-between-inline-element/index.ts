@@ -8,7 +8,7 @@ import {
   validateSpace,
 } from '../../utils/rules/inline-element'
 
-export const RULE_NAME = 'space-between-inline-elemnt'
+export const RULE_NAME = 'space-between-inline-element'
 
 type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
 type Options = []

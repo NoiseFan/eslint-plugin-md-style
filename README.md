@@ -61,7 +61,7 @@ export default [
     plugins: {
       'md-style': mdStyle,
     },
-    language: 'md-style/commonmark',
+    language: 'md-style/gfm',
     rules: {
       'md-style/space-between-inline-element': 'error',
       'md-style/valid-heading-anchor': 'error',
@@ -120,7 +120,7 @@ export default antfu(
 
 This plugin builds on top of `@eslint/markdown` rather than replacing it.
 
-`@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/commonmark` language used by the bundled configs.
+`@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/gfm` language used by the bundled configs.
 
 ## License
 

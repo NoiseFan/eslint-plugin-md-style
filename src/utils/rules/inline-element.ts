@@ -7,7 +7,7 @@ import type {
   SpaceContext,
 } from '../../types/inline-element'
 import type { NodeContextReturnType } from '../ast'
-import { hasChildren, isInlineElement } from '../ast'
+import { hasChildren, isInlineElement, isTableCell } from '../ast'
 import { getLikeAnchor } from './anchor'
 
 export const INLINE_SPACE_MESSAGE_IDS = {
@@ -102,7 +102,10 @@ interface whiteSpaceReturn {
  * @example `  text`, `head` -> { count: 2, start: 0, end: 2 }
  * @example `text  `, `tail` -> { count: 2, start: 4, end: 6 }
  */
-export function getWhiteSpace(str: string | undefined, position: PositionOptions = 'head'): whiteSpaceReturn {
+export function getWhiteSpace(
+  str: string | undefined,
+  position: PositionOptions = 'head',
+): whiteSpaceReturn {
   const defaultVal = { count: 0, start: 0, end: 0 }
   if (!str || str.length === 0)
     return defaultVal
@@ -133,7 +136,10 @@ export function getWhiteSpace(str: string | undefined, position: PositionOptions
  * @example `。 hello`, `head` -> true
  * @example `hello .`, `tail` -> true
  */
-export function hasPunctuation(str: string | undefined, position: PositionOptions = 'head'): boolean {
+export function hasPunctuation(
+  str: string | undefined,
+  position: PositionOptions = 'head',
+): boolean {
   if (!str)
     return false
   str = str.trim()
@@ -148,7 +154,10 @@ export function hasPunctuation(str: string | undefined, position: PositionOption
 /**
  * Gets the character adjacent to the start or end of a string.
  */
-export function getAdjacentChar(str: string | undefined, position: PositionOptions): string | undefined {
+export function getAdjacentChar(
+  str: string | undefined,
+  position: PositionOptions,
+): string | undefined {
   if (!str)
     return undefined
 
@@ -160,7 +169,9 @@ export function getAdjacentChar(str: string | undefined, position: PositionOptio
  * Extracts the plain-text value of a phrasing node.
  * If the node does not expose `value`, recursively concatenates the text from its children.
  */
-function getNodeValue(node: PhrasingContent | undefined): string | undefined {
+function getNodeValue(
+  node: PhrasingContent | undefined,
+): string | undefined {
   if (!node)
     return
   if ('value' in node)
@@ -177,7 +188,9 @@ function getNodeValue(node: PhrasingContent | undefined): string | undefined {
 /**
  * Gets whitespace and punctuation information for text adjacent to a link or inline code node.
  */
-export function getSpaceContext(nodeContext: NodeContextReturnType<PhrasingContent>): SpaceContext {
+export function getSpaceContext(
+  nodeContext: NodeContextReturnType<PhrasingContent>,
+): SpaceContext {
   const { prev, next } = nodeContext
   const prevValue = getNodeValue(prev)
   const nextValue = getNodeValue(next)
@@ -257,9 +270,7 @@ export function validateSpaceBeforeNode(
 /**
  * Validates spacing after an inline node when the next character is punctuation.
  */
-export function validateSpaceAfterPunctuation(
-  context: AdjacentTextContext,
-): InlineElementSpaceIssue | undefined {
+export function validateSpaceAfterPunctuation(context: AdjacentTextContext): InlineElementSpaceIssue | undefined {
   if (isDashPunctuation(getAdjacentChar(context.value, 'head'))) {
     return validateSingleRequiredSpace(
       context.whiteSpace.count,
@@ -284,9 +295,7 @@ export function validateSpaceAfterPunctuation(
 /**
  * Validates the spacing between the current inline node and the next node.
  */
-export function validateSpaceAfterNode(
-  context: AdjacentTextContext,
-): InlineElementSpaceIssue | undefined {
+export function validateSpaceAfterNode(context: AdjacentTextContext): InlineElementSpaceIssue | undefined {
   if (context.hasPunctuation)
     return validateSpaceAfterPunctuation(context)
 
@@ -298,23 +307,52 @@ export function validateSpaceAfterNode(
 }
 
 /**
- * Validates whether the spacing around an inline element follows the typography rules.
+ * Validates spacing around an inline element inside a table cell.
+ * Table cells skip checks when the next sibling is another inline element.
+ */
+function validateTableCellSpace(nodeContext: NodeContextReturnType<InlineElement>): InlineElementSpaceIssue | undefined {
+  const { prev, next } = getSpaceContext(nodeContext)
+  if (prev && prev.value) {
+    const beforeIssue = validateSpaceBeforeNode(prev)
+    if (beforeIssue)
+      return beforeIssue
+  }
+
+  if (!next || isInlineElement(nodeContext.next) || !next.value)
+    return
+
+  return validateSpaceAfterNode(next)
+}
+
+/**
+ * Validates spacing around an inline element in the default text flow.
+ */
+function validateDefaultSpace(nodeContext: NodeContextReturnType<InlineElement>): InlineElementSpaceIssue | undefined {
+  const { prev, next } = getSpaceContext(nodeContext)
+
+  if (prev && nodeContext.prev) {
+    const beforeIssue = validateSpaceBeforeNode(prev)
+    if (beforeIssue)
+      return beforeIssue
+  }
+
+  if (!next || isInlineElement(nodeContext.next) || !nodeContext.next)
+    return
+
+  return validateSpaceAfterNode(next)
+}
+
+/**
+ * Validates spacing around an inline element by delegating to the appropriate strategy
+ * for table cells or the default text flow.
  * - Regular text and selected inline elements should be separated by one space.
  * - Fullwidth punctuation and paired punctuation usually touch inline elements without spaces.
  * - Adjacent selected inline elements are handled by the following element to avoid duplicate fixes.
  */
 export function validateSpace(nodeContext: NodeContextReturnType<InlineElement>): InlineElementSpaceIssue | undefined {
-  const { prev, next } = nodeContext
-  const spaceContext = getSpaceContext(nodeContext)
+  const { parent } = nodeContext
+  if (parent && isTableCell(parent))
+    return validateTableCellSpace(nodeContext)
 
-  if (prev && spaceContext.prev) {
-    const beforeIssue = validateSpaceBeforeNode(spaceContext.prev)
-    if (beforeIssue)
-      return beforeIssue
-  }
-
-  if (!next || !spaceContext.next || isInlineElement(next))
-    return
-
-  return validateSpaceAfterNode(spaceContext.next)
+  return validateDefaultSpace(nodeContext)
 }

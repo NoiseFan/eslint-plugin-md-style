@@ -75,6 +75,6 @@ run({
   invalid,
   configs: {
     plugins: { markdown },
-    language: 'markdown/commonmark',
+    language: 'markdown/gfm',
   },
 })

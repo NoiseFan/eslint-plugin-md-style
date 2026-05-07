@@ -6,7 +6,6 @@ export const plugin: ESLint.Plugin = {
   rules,
   processors: markdown.processors,
   languages: {
-    commonmark: new MarkdownLanguage({ mode: 'commonmark' }),
     gfm: new MarkdownLanguage({ mode: 'gfm' }),
   },
 }
@@ -28,7 +27,7 @@ export const configs: PluginConfigMap = {
     plugins: {
       'md-style': plugin,
     },
-    language: 'md-style/commonmark',
+    language: 'md-style/gfm',
     rules: recommendedRules,
   },
   all: {
@@ -37,7 +36,7 @@ export const configs: PluginConfigMap = {
     plugins: {
       'md-style': plugin,
     },
-    language: 'md-style/commonmark',
+    language: 'md-style/gfm',
     rules: allRules,
   },
 }

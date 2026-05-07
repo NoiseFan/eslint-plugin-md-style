@@ -1,6 +1,7 @@
 import type { SpaceContext } from '../../types/inline-element'
 import { describe, expect, it } from 'vitest'
-import { getParsedLinkContext } from '../markdown'
+import { isInlineCodeNode } from '../ast'
+import { getParsedLinkContext, getParsedNodeContext } from '../markdown'
 import {
   getSpaceContext,
   getWhiteSpace,
@@ -9,6 +10,7 @@ import {
   isFullwidthPunctuation,
   isHalfwidthPunctuation,
   isPunctuation,
+  validateSpace,
   validateSpaceAfterPunctuation,
 } from './inline-element'
 
@@ -123,6 +125,10 @@ describe('getSpaceContext', () => {
     expect(getSpaceContext(getParsedLinkContext(input))).toStrictEqual(output)
   }
 
+  function assertInlineCodeSpaceContext(input: string, output: SpaceContext) {
+    expect(getSpaceContext(getParsedNodeContext(input, isInlineCodeNode))).toStrictEqual(output)
+  }
+
   it('returns text metadata when text exists on both sides', () => {
     assertSpaceContext('See [guide](/guide/) today.', {
       prev: { value: 'See ', whiteSpace: { count: 1, start: 3, end: 4 }, hasPunctuation: false, punctuationType: 'half' },
@@ -184,6 +190,36 @@ describe('getSpaceContext', () => {
       prev: { value: 'read  ', whiteSpace: { count: 2, start: 4, end: 6 }, hasPunctuation: false, punctuationType: 'half' },
       next: { value: '  now', whiteSpace: { count: 2, start: 0, end: 2 }, hasPunctuation: false, punctuationType: 'half' },
     })
+  })
+
+  it('handles the last inline element in a table cell without trailing text', () => {
+    assertInlineCodeSpaceContext('| Setting | Value|\n| --- | --- |\n| Working directory | `/path` `/to/your-project-root`|', {
+      prev: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
+      next: { value: ' ', whiteSpace: { count: 1, start: 0, end: 1 }, hasPunctuation: false, punctuationType: 'half' },
+    })
+  })
+
+  it('handles a standalone inline element in a table cell without adjacent text', () => {
+    assertInlineCodeSpaceContext('| Setting | Value|\n| --- | --- |\n| Working directory | `/path/to/your-project-root`|', {
+      prev: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
+      next: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
+    })
+  })
+})
+
+describe('validateSpace', () => {
+  it('allows spaced adjacent inline elements in table cells', () => {
+    const markdown = '| Setting | Value|\n| --- | --- |\n| Working directory | `/path` `/to/your-project-root`|'
+    const inlineCodeContext = getParsedNodeContext(markdown, isInlineCodeNode)
+
+    expect(validateSpace(inlineCodeContext)).toBeUndefined()
+  })
+
+  it('skips standalone inline elements in table cells without adjacent text', () => {
+    const markdown = '| Setting | Value|\n| --- | --- |\n| Working directory | `/path/to/your-project-root`|'
+    const inlineCodeContext = getParsedNodeContext(markdown, isInlineCodeNode)
+
+    expect(validateSpace(inlineCodeContext)).toBeUndefined()
   })
 })
 

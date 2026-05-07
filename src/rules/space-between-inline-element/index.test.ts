@@ -125,16 +125,17 @@ const valid: ValidTestCase[] = [
     code: '![alt][img]text\n\n[img]: /img.png',
   },
   {
-    description: '忽略表格中内联元素首尾空格',
-    code: '| 配置参数                 | 设置值                              |\n| ---------------------- | ---------------------------------- |\n| Working directory      | `/path/to/your-project-root`       |',
-  },
-  {
-    description: '半角符号前后应有空格',
-    code: '`not` / `!`',
-  },
-  {
-    description: '连续的内联元素应使用空格隔开',
+    description: 'adjacent inline elements should be separated by spaces',
     code: '- **CLI:** `--browser.ui`\n- **Config:** [browser.ui](/config/browser/ui)',
+  },
+  // table
+  {
+    description: 'should ignore leading and trailing spaces around inline elements in tables',
+    code: '| Setting                 | Value                              |\n| ---------------------- | ---------------------------------- |\n| Working directory      | `/path/to/your-project-root`       |',
+  },
+  {
+    description: 'adjacent inline elements in tables should be separated by spaces',
+    code: '| Setting                 | Value                              |\n| ---------------------- | ---------------------------------- |\n| Working directory      | `/path/to/` `your-project-root`       |',
   },
 ]
 
@@ -388,6 +389,12 @@ const invalid: InvalidTestCase[] = [
     errors: [{ messageId: MESSAGE_IDS.multipleSpacesAfterPunctuation }],
   },
   {
+    description: 'unexpected space after inline element before slash punctuation',
+    code: '`not` / `!`',
+    output: '`not`/ `!`',
+    errors: [{ messageId: MESSAGE_IDS.unexpectedSpaceAfter }],
+  },
+  {
     description: 'missing space after inline element before dash punctuation',
     code: 'a `code`- node',
     output: 'a `code` - node',
@@ -410,6 +417,6 @@ run({
   invalid,
   configs: {
     plugins: { markdown },
-    language: 'markdown/commonmark',
+    language: 'markdown/gfm',
   },
 })

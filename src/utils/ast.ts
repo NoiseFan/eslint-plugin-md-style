@@ -1,4 +1,4 @@
-import type { Link, Nodes, Paragraph, Parents, PhrasingContent, RootContent, Text } from 'mdast'
+import type { InlineCode, Link, Nodes, Paragraph, Parents, PhrasingContent, RootContent, TableCell, Text } from 'mdast'
 import type { NodeContextReturnType, RuleContextWithAncestors } from '../types/ast'
 import type { InlineElement } from '../types/inline-element'
 
@@ -40,6 +40,14 @@ export function isTextNode(node: Nodes | undefined): node is Text {
  */
 export function isLinkNode(node: Nodes): node is Link {
   return node.type === 'link'
+}
+
+export function isInlineCodeNode(node: Nodes): node is InlineCode {
+  return node.type === 'inlineCode'
+}
+
+export function isTableCell(node: Nodes): node is TableCell {
+  return node.type === 'tableCell'
 }
 
 const INLINE_ELEMENT_TYPES = new Set(['link', 'image', 'inlineCode', 'emphasis', 'strong'])

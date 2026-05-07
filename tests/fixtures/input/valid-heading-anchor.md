@@ -39,23 +39,3 @@ test('assert.equal', () => {
 <!-- use vue-component to render markdown -->
 
 # Custom Pool <Badge type="danger">advanced</Badge> {#custom-pool}
-
-<!-- inline-code -->
-
-It is recommended that you install a copy of`vitest` in your`package.json`
-
-如果在`package.json`中安装一份`vitest`的副本
-
-<!-- emphasis & strong -->
-
-## isFunction
-
-- **Type:**`<T>(value: T, message?: string) => void`
-- __Alias:__`isCallable`
-Asserts that`value`is a function.
-
-## isFunction
-
--**类型:**`<T>(value: T, message?: string) => void`
--**别名:**`isCallable`
-断言`value`是一个函数。

@@ -122,6 +122,11 @@ This plugin builds on top of `@eslint/markdown` rather than replacing it.
 
 `@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/gfm` language used by the bundled configs.
 
+## References
+
+- [W3C Manual of Style](https://www.w3.org/guide/manual-of-style/)
+- [中文排版要求](https://w3c.github.io/clreq/)
+
 ## License
 
 [MIT](./LICENSE) License © 2025-PRESENT [Noise Fan](https://github.com/noisefan)

@@ -16,10 +16,12 @@ describe('getSpaceCount', () => {
 })
 
 describe('getSpaceContext', () => {
+  // Reuse the same assertion flow for link nodes to keep cases focused on expected metadata.
   function assertSpaceContext(input: string, output: SpaceContext) {
     expect(getSpaceContext(getParsedLinkContext(input))).toStrictEqual(output)
   }
 
+  // Inline code uses a different parser entry point but should produce the same space context shape.
   function assertInlineCodeSpaceContext(input: string, output: SpaceContext) {
     expect(getSpaceContext(getParsedNodeContext(input, isInlineCodeNode))).toStrictEqual(output)
   }

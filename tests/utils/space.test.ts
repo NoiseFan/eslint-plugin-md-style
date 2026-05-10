@@ -1,4 +1,4 @@
-import type { SpaceContext } from '@/types/element/space'
+import type { SpaceContext } from '@/types/space'
 import { isInlineCodeNode } from '../../src/utils/ast'
 import { getParsedLinkContext, getParsedNodeContext } from '../../src/utils/markdown'
 import { getSpaceContext, getWhiteSpace } from '../../src/utils/space'

@@ -5,6 +5,10 @@
     "moduleDetection": "force",
     "module": "preserve",
     "moduleResolution": "bundler",
+    "paths": {
+      "*": ["./*"],
+      "@/*": ["./src/*"]
+    },
     "resolveJsonModule": true,
     "types": ["node", "vitest/globals"],
     "strict": true,

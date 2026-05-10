@@ -1,7 +1,7 @@
-import { createRule, getNodePosition } from '../../utils'
-import { getNodeContext } from '../../utils/ast'
-import { calcAnchorPositionCompensate, getLikeAnchor, hasChinese, isStrictAnchor, normalizeAnchor } from '../../utils/rules/anchor'
-import { hasFrontmatter } from '../../utils/rules/heading'
+import { createRule } from '@/utils'
+import { calcAnchorPositionCompensate, getLikeAnchor, hasChinese, isStrictAnchor, normalizeAnchor } from '@/utils/anchor'
+import { getNodeContext, getNodePosition } from '@/utils/ast'
+import { hasFrontmatter } from '@/utils/heading'
 
 export const RULE_NAME = 'valid-heading-anchor'
 const MESSAGE_IDS = {

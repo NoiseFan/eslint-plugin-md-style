@@ -1,5 +1,23 @@
 import type { Parents, PhrasingContent, RootContent } from 'mdast'
 
+/**
+ * The resolved source position of a node.
+ */
+export interface NodePositionReturnType {
+  /**
+   * Whether the node has a complete position.
+   */
+  position: boolean
+  /**
+   * The start offset of the node.
+   */
+  start: number
+  /**
+   * The end offset of the node.
+   */
+  end: number
+}
+
 export type SiblingNode<Current extends RootContent = RootContent> = Current extends PhrasingContent
   ? PhrasingContent
   : RootContent

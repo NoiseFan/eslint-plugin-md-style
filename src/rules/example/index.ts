@@ -1,4 +1,4 @@
-import { createRule, } from '../../utils'
+import { createRule, } from '@/utils'
 
 export const RULE_NAME = 'example'
 const MESSAGE_IDS = {

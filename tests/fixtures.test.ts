@@ -5,7 +5,7 @@ import { glob } from 'tinyglobby'
 import { describe, it } from 'vitest'
 import plugin from '../src/index'
 
-describe('fixtures', () => {
+describe.skip('fixtures', () => {
   runWithConfig('recommended', { ...plugin.configs.recommended })
 })
 

@@ -1,13 +1,6 @@
 import type { InlineCode, Link, Nodes, Paragraph, Parents, PhrasingContent, RootContent, TableCell, Text } from 'mdast'
-import type { NodeContextReturnType, RuleContextWithAncestors } from '../types/ast'
-import type { InlineElement } from '../types/inline-element'
-
-export type {
-  NodeContextReturnType,
-  RuleContextWithAncestors,
-  SiblingNode,
-  SourceCodeWithAncestors,
-} from '../types/ast'
+import type { NodeContextReturnType, NodePositionReturnType, RuleContextWithAncestors } from '@/types/ast'
+import type { InlineElement, PositionOptions } from '@/types/inline-element'
 
 /* ==================== Node type guards ==================== */
 
@@ -95,6 +88,38 @@ export function findNode<Found extends Nodes>(
 /* ==================== Context helpers ==================== */
 
 /**
+ * Extracts the plain-text value of a phrasing node.
+ * If the node does not expose `value`, recursively concatenates the text from its children.
+ */
+export function getNodeValue(
+  node: PhrasingContent | undefined,
+): string | undefined {
+  if (!node)
+    return
+  if ('value' in node)
+    return node.value
+  if (hasChildren(node)) {
+    const value = node.children
+      .map(getNodeValue)
+      .join('')
+
+    return value || undefined
+  }
+}
+
+/**
+ * Gets the start and end offsets for a node.
+ */
+export function getNodePosition(node: Nodes): NodePositionReturnType {
+  const start = node.position?.start.offset
+  const end = node.position?.end.offset
+  if (start == null || end == null)
+    return { position: false, start: 0, end: 0 }
+
+  return { position: true, start, end }
+}
+
+/**
  * Returns the current node's parent and adjacent siblings in the Markdown AST.
  */
 export function getNodeContext<Current extends PhrasingContent>(
@@ -124,4 +149,18 @@ export function getNodeContext(
     next: parent.children[currentIndex + 1],
     current: node,
   }
+}
+
+/**
+ * Gets the character adjacent to the start or end of a string.
+ */
+export function getAdjacentChar(
+  str: string | undefined,
+  position: PositionOptions,
+): string | undefined {
+  if (!str)
+    return undefined
+
+  str = str.trim()
+  return position === 'head' ? str[0] : str[str.length - 1]
 }

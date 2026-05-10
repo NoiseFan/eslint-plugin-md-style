@@ -1,6 +1,4 @@
 import antfu from '@antfu/eslint-config'
-import markdown from '@eslint/markdown'
-import plugin from './src/index'
 
 export default antfu(
   {
@@ -17,13 +15,5 @@ export default antfu(
         'test/padding-around-test-blocks': 'error',
       },
     },
-  },
-  {
-    files: ['**/*.md'],
-    plugins: {
-      markdown,
-      'md-style': plugin,
-    },
-    rules: {},
   },
 )

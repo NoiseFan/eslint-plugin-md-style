@@ -1,5 +1,5 @@
 import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
-import type { INLINE_SPACE_MESSAGE_IDS } from '../utils/rules/inline-element'
+import type { INLINE_SPACE_MESSAGE_IDS } from '@/types/inline-element'
 
 /**
  * The Markdown inline element node types selected by space-between-inline-element.
@@ -36,18 +36,4 @@ export interface AdjacentTextContext {
    * The punctuation classification.
    */
   punctuationType: 'full' | 'half'
-}
-
-/**
- * The spacing context around a link.
- */
-export interface SpaceContext {
-  /**
-   * The previous adjacent text context.
-   */
-  prev?: AdjacentTextContext
-  /**
-   * The next adjacent text context.
-   */
-  next?: AdjacentTextContext
 }

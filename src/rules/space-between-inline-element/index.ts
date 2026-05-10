@@ -1,18 +1,15 @@
 import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
-import type { RuleContext } from '../../types'
-import { createRule, getNodePosition } from '../../utils'
-import { getNodeContext, isNestedInlineElement } from '../../utils/ast'
-import {
-  getSpaceContext,
-  INLINE_SPACE_MESSAGE_IDS as MESSAGE_IDS,
-  validateSpace,
-} from '../../utils/rules/inline-element'
+import type { RuleContext } from '@/types'
+import type { InlineElement } from '@/types/inline-element'
+import { createRule } from '@/utils'
+import { getNodeContext, getNodePosition, isNestedInlineElement } from '@/utils/ast'
+import { INLINE_SPACE_MESSAGE_IDS as MESSAGE_IDS, validateSpace } from '@/utils/inline-element'
+import { getSpaceContext } from '@/utils/space'
 
 export const RULE_NAME = 'space-between-inline-element'
 
 type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
 type Options = []
-type InlineElementNode = Link | Image | InlineCode | Emphasis | Strong
 
 const BEFORE_INLINE_ELEMENT_MESSAGE_IDS = new Set<MessageIds>([
   MESSAGE_IDS.missingSpaceBefore,
@@ -24,7 +21,7 @@ const BEFORE_INLINE_ELEMENT_MESSAGE_IDS = new Set<MessageIds>([
 /**
  * Checks one selected inline element and reports the fix range around it.
  */
-function checkInlineElement(context: RuleContext<MessageIds, Options>, node: InlineElementNode): void {
+function checkInlineElement(context: RuleContext<MessageIds, Options>, node: InlineElement): void {
   const { position, start, end } = getNodePosition(node)
   if (!position)
     return

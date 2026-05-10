@@ -1,5 +1,5 @@
 import type { Link, Nodes, PhrasingContent, Root, RootContent } from 'mdast'
-import type { NodeContextReturnType } from './ast'
+import type { NodeContextReturnType } from '@/types/ast'
 import { MarkdownLanguage } from '@eslint/markdown'
 import { findNode, getNodeContext, isLinkNode } from './ast'
 

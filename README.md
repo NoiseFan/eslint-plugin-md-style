@@ -61,9 +61,9 @@ export default [
     plugins: {
       'md-style': mdStyle,
     },
-    language: 'md-style/commonmark',
+    language: 'md-style/gfm',
     rules: {
-      'md-style/space-between-link': 'error',
+      'md-style/space-between-inline-element': 'error',
       'md-style/valid-heading-anchor': 'error',
     },
   },
@@ -113,14 +113,19 @@ export default antfu(
 
 | Rule | Included in `recommended` | Autofix |
 | --- | --- | --- |
-| `md-style/space-between-link` | ✅ | 🔧 |
+| `md-style/space-between-inline-element` | ✅ | 🔧 |
 | `md-style/valid-heading-anchor` | ✅ | 🔧 |
 
 ## Why `@eslint/markdown` Is Required
 
 This plugin builds on top of `@eslint/markdown` rather than replacing it.
 
-`@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/commonmark` language used by the bundled configs.
+`@eslint/markdown` provides the Markdown processor and language support. This plugin re-exports those capabilities through its own plugin entry and adds documentation style rules on top, including the `md-style/gfm` language used by the bundled configs.
+
+## References
+
+- [W3C Manual of Style](https://www.w3.org/guide/manual-of-style/)
+- [中文排版要求](https://w3c.github.io/clreq/)
 
 ## License
 

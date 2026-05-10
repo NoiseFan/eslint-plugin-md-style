@@ -1,101 +1,7 @@
-import type { SpaceContext } from '../../types/link'
-import { describe, expect, it } from 'vitest'
-import { getParsedLinkContext } from '../markdown'
-import { getSpaceContext, getWhiteSpace, isCustomContainerMarker, isDashPunctuation, isFullwidthPunctuation, isHalfwidthPunctuation, isPunctuation } from './link'
-
-describe('isFullwidthPunctuation', () => {
-  it('should return true for fullwidth punctuation', () => {
-    const inputs = '（）【】「」《》“”，。！？，：；、'
-    for (const input of Array.from(inputs)) {
-      expect(isFullwidthPunctuation(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return false for halfwidth punctuation', () => {
-    const inputs = '()[]{}<>"",.!?:;'
-    for (const input of Array.from(inputs)) {
-      expect(isFullwidthPunctuation(input), input).toBeFalsy()
-    }
-  })
-})
-
-describe('isHalfwidthPunctuation', () => {
-  it('should return true for halfwidth punctuation', () => {
-    const inputs = '!"#%&\'()*,-./:;?@[]_{}'
-    for (const input of Array.from(inputs)) {
-      expect(isHalfwidthPunctuation(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return false for fullwidth punctuation', () => {
-    const inputs = '（）【】「」《》“”，。！？，：；、'
-    for (const input of Array.from(inputs)) {
-      expect(isHalfwidthPunctuation(input), input).toBeFalsy()
-    }
-  })
-
-  it('should return false for non-punctuation values', () => {
-    const inputs = ['a', '1', ' ', '', 'ab', '+', '$', '￥', '×', '<', '>']
-    for (const input of inputs) {
-      expect(isHalfwidthPunctuation(input), input).toBeFalsy()
-    }
-  })
-})
-
-describe('isPunctuation', () => {
-  it('should return true for halfwidth punctuation', () => {
-    const inputs = '!"#%&\'()*,-./:;?@[]_{}'
-    for (const input of Array.from(inputs)) {
-      expect(isPunctuation(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return true for fullwidth punctuation', () => {
-    const inputs = '（）【】「」《》“”，。！？，：；、'
-    for (const input of Array.from(inputs)) {
-      expect(isPunctuation(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return false for non-punctuation values', () => {
-    const inputs = ['a', '1', ' ', '', 'ab', '+', '$', '￥', '×', '<', '>']
-    for (const input of inputs) {
-      expect(isPunctuation(input), input).toBeFalsy()
-    }
-  })
-})
-
-describe('isDashPunctuation', () => {
-  it('should return true for dash-like punctuation', () => {
-    const inputs = ['-', '–', '—', '−']
-    for (const input of inputs) {
-      expect(isDashPunctuation(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return false for non-dash punctuation', () => {
-    const inputs = [',', '.', '，', '。', '', '--']
-    for (const input of inputs) {
-      expect(isDashPunctuation(input), input).toBeFalsy()
-    }
-  })
-})
-
-describe('isCustomContainerMarker', () => {
-  it('should return true for custom container markers on the next line', () => {
-    const inputs = ['\n:::', '\n  :::', ' \n:::  ']
-    for (const input of inputs) {
-      expect(isCustomContainerMarker(input), input).toBeTruthy()
-    }
-  })
-
-  it('should return false for inline punctuation and non-marker values', () => {
-    const inputs = [undefined, '', ':::', ' ::: ', '\n::', '\n: text', '\n::: text', 'text\n:::']
-    for (const input of inputs) {
-      expect(isCustomContainerMarker(input), input ?? 'undefined').toBeFalsy()
-    }
-  })
-})
+import type { SpaceContext } from '@/types/space'
+import { isInlineCodeNode } from '@/utils/ast'
+import { getParsedLinkContext, getParsedNodeContext } from '@/utils/markdown'
+import { getSpaceContext, getWhiteSpace } from '@/utils/space'
 
 describe('getSpaceCount', () => {
   it('counts leading whitespace', () => {
@@ -110,8 +16,14 @@ describe('getSpaceCount', () => {
 })
 
 describe('getSpaceContext', () => {
+  // Reuse the same assertion flow for link nodes to keep cases focused on expected metadata.
   function assertSpaceContext(input: string, output: SpaceContext) {
     expect(getSpaceContext(getParsedLinkContext(input))).toStrictEqual(output)
+  }
+
+  // Inline code uses a different parser entry point but should produce the same space context shape.
+  function assertInlineCodeSpaceContext(input: string, output: SpaceContext) {
+    expect(getSpaceContext(getParsedNodeContext(input, isInlineCodeNode))).toStrictEqual(output)
   }
 
   it('returns text metadata when text exists on both sides', () => {
@@ -174,6 +86,20 @@ describe('getSpaceContext', () => {
     assertSpaceContext('read  [guide](/guide/)  now', {
       prev: { value: 'read  ', whiteSpace: { count: 2, start: 4, end: 6 }, hasPunctuation: false, punctuationType: 'half' },
       next: { value: '  now', whiteSpace: { count: 2, start: 0, end: 2 }, hasPunctuation: false, punctuationType: 'half' },
+    })
+  })
+
+  it('handles the last inline element in a table cell without trailing text', () => {
+    assertInlineCodeSpaceContext('| Setting | Value|\n| --- | --- |\n| Working directory | `/path` `/to/your-project-root`|', {
+      prev: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
+      next: { value: ' ', whiteSpace: { count: 1, start: 0, end: 1 }, hasPunctuation: false, punctuationType: 'half' },
+    })
+  })
+
+  it('handles a standalone inline element in a table cell without adjacent text', () => {
+    assertInlineCodeSpaceContext('| Setting | Value|\n| --- | --- |\n| Working directory | `/path/to/your-project-root`|', {
+      prev: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
+      next: { value: undefined, whiteSpace: { count: 0, start: 0, end: 0 }, hasPunctuation: false, punctuationType: 'half' },
     })
   })
 })

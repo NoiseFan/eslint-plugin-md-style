@@ -1,7 +1,7 @@
-import spaceBetweenLink from './space-between-link/index'
+import spaceBetweenInlineElemnt from './space-between-inline-element/index'
 import validHeadingAnchor from './valid-heading-anchor/index'
 
 export const rules = {
-  'space-between-link': spaceBetweenLink,
+  'space-between-inline-element': spaceBetweenInlineElemnt,
   'valid-heading-anchor': validHeadingAnchor,
 }

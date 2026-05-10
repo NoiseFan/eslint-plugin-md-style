@@ -1,11 +1,11 @@
 import type { Link } from 'mdast'
 import { describe, expect, it } from 'vitest'
-import { findNode, isLinkNode } from './ast'
+import { findNode, isLinkNode } from '@/utils/ast'
 import {
   getParsedLinkContext,
   getParsedNodeContext,
   parseMarkdown,
-} from './markdown'
+} from '@/utils/markdown'
 
 describe('parseMarkdown', () => {
   it('returns the parsed AST and SourceCode wrapper', () => {

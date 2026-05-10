@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { findNode, hasChildren, isLinkNode, isParagraphNode, isTextNode } from './ast'
-import { parseMarkdown } from './markdown'
+import { findNode, hasChildren, isLinkNode, isParagraphNode, isTextNode } from '@/utils/ast'
+import { parseMarkdown } from '@/utils/markdown'
 
 describe('isParentNode', () => {
   it('returns true for nodes with children', () => {

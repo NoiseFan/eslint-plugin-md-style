@@ -43,8 +43,14 @@
     "prepare": "simple-git-hooks"
   },
   "peerDependencies": {
+    "@antfu/eslint-config": "^7.5.0",
     "@eslint/markdown": "^7.5.1",
-    "eslint": "^9.0.0 || ^10.0.0"
+    "eslint": "^9.30.0 || ^10.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@antfu/eslint-config": {
+      "optional": true
+    }
   },
   "dependencies": {},
   "devDependencies": {

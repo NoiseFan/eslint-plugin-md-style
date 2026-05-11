@@ -18,6 +18,13 @@ It currently ships:
 
 ## Quick Start
 
+### Version Requirements
+
+- `eslint`: `^9.30.0` or `^10.0.0`
+- `@antfu/eslint-config`: `^7.5.0` when used
+
+This plugin is designed for ESLint flat config. If you use `@antfu/eslint-config`, make sure its version satisfies the requirement above.
+
 Install the required packages:
 
 ```bash

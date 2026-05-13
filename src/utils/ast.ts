@@ -124,14 +124,10 @@ export function getNodePosition(node: Nodes): NodePositionReturnType {
 /**
  * Returns the current node's parent and adjacent siblings in the Markdown AST.
  */
-export function getNodeContext<Current extends PhrasingContent>(
-  context: RuleContextWithAncestors,
-  node: Current,
-): NodeContextReturnType<Current, PhrasingContent>
 export function getNodeContext<Current extends RootContent>(
   context: RuleContextWithAncestors,
   node: Current,
-): NodeContextReturnType<Current, RootContent>
+): NodeContextReturnType<Current>
 export function getNodeContext(
   context: RuleContextWithAncestors,
   node: RootContent,
@@ -155,7 +151,27 @@ export function getNodeContext(
 }
 
 /**
- * Gets the character adjacent to the start or end of a string.
+ * Returns the current node and adjacent siblings from a known children array.
+ * Useful when iterating a tokenized child list directly without an ESLint ancestor context.
+ */
+export function getNodeContextByParent<Current>(
+  childrenNodes: readonly Current[],
+  currentIndex: number,
+): {
+  prev: Current | undefined
+  current: Current | undefined
+  next: Current | undefined
+} {
+  return {
+    prev: childrenNodes[currentIndex - 1],
+    current: childrenNodes[currentIndex],
+    next: childrenNodes[currentIndex + 1],
+  }
+}
+
+/**
+ * Gets the first or last visible character of a string after trimming
+ * surrounding whitespace.
  */
 export function getAdjacentChar(
   str: string | undefined,

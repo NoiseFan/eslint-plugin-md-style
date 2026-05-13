@@ -2,7 +2,7 @@ import type { Text } from 'mdast'
 import { createRule } from '@/utils'
 import { getNodePosition } from '@/utils/ast'
 
-export const RULE_NAME = 'space-between-cjk-and-alphanumeric'
+export const RULE_NAME = 'example'
 const MESSAGE_IDS = {
   exampleMsgId: 'exampleMsgId',
 } as const

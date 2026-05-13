@@ -6,7 +6,7 @@ import { describe, it } from 'vitest'
 import plugin from '../src/index'
 
 describe('fixtures', () => {
-  runWithConfig('recommended', { ...plugin.configs.recommended })
+  runWithConfig('all', { ...plugin.configs.all })
 })
 
 function runWithConfig(name: string, configs: Record<string, unknown>) {

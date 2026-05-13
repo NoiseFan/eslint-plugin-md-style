@@ -1,6 +1,6 @@
 import type { Text } from 'mdast'
-import { getNodePosition } from 'src/utils/ast'
 import { createRule } from '@/utils'
+import { getNodePosition } from '@/utils/ast'
 
 export const RULE_NAME = 'space-between-cjk-and-alphanumeric'
 const MESSAGE_IDS = {

@@ -125,47 +125,29 @@ export function tokenizeText(value: string, start: TextPoint = DEFAULT_START_POI
 }
 
 /**
- * Builds a small auxiliary AST for a Markdown text node value.
- */
-function buildTextAst(
-  value: string,
-  position: TextPosition,
-  node?: Text,
-): TextAst {
-  const ast: TextAst = {
-    type: 'text',
-    value,
-    position,
-    children: tokenizeText(value, position.start),
-  }
-
-  if (node)
-    ast.node = node
-
-  return ast
-}
-
-/**
- * Builds a text token AST from an mdast text node.
+ * Converts an mdast text node into a tokenized text AST with normalized source positions.
  */
 export function buildTextNodeAst(node: Text): TextAst {
   const start = node.position?.start
   const end = node.position?.end
-
-  return buildTextAst(
-    node.value,
-    {
-      start: {
-        line: start?.line ?? DEFAULT_START_POINT.line,
-        column: start?.column ?? DEFAULT_START_POINT.column,
-        offset: start?.offset ?? DEFAULT_START_POINT.offset,
-      },
-      end: {
-        line: end?.line ?? DEFAULT_START_POINT.line,
-        column: end?.column ?? DEFAULT_START_POINT.column + node.value.length,
-        offset: end?.offset ?? DEFAULT_START_POINT.offset + node.value.length,
-      },
+  const position: TextPosition = {
+    start: {
+      line: start?.line ?? DEFAULT_START_POINT.line,
+      column: start?.column ?? DEFAULT_START_POINT.column,
+      offset: start?.offset ?? DEFAULT_START_POINT.offset,
     },
+    end: {
+      line: end?.line ?? DEFAULT_START_POINT.line,
+      column: end?.column ?? DEFAULT_START_POINT.column + node.value.length,
+      offset: end?.offset ?? DEFAULT_START_POINT.offset + node.value.length,
+    },
+  }
+
+  return {
+    type: 'text',
+    value: node.value,
+    position,
+    children: tokenizeText(node.value, position.start),
     node,
-  )
+  }
 }

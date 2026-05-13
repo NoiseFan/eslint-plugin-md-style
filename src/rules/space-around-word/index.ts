@@ -56,9 +56,14 @@ export default createRule<Options, MessageIds>({
   },
 })
 
+/**
+ * Checks whether a token type should be treated as a word that participates in
+ * CJK / alphanumeric spacing rules.
+ */
 function isAlphanumeric(type: string | undefined): boolean {
   return type === TEXT_TYPE.latin || type === TEXT_TYPE.number
 }
+
 interface FixBoundarySpaceResult {
   fixed: string
   missingBefore: boolean
@@ -67,71 +72,103 @@ interface FixBoundarySpaceResult {
   unexpectedAfter: boolean
 }
 
-function fixBoundarySpace(node: Text): FixBoundarySpaceResult {
-  const { children } = buildTextNodeAst(node)
-  let fixed = ''
-  let missingBefore = false
-  let missingAfter = false
-  let unexpectedBefore = false
-  let unexpectedAfter = false
+type TextToken = ReturnType<typeof buildTextNodeAst>['children'][number]
+type TokenContext = ReturnType<typeof getNodeContextByParent<TextToken>>
 
-  for (let i = 0; i < children.length; i += 1) {
-    const { prev, current, next } = getNodeContextByParent(children, i)
-    /* v8 ignore if -- @preserve */
-    if (!current)
-      continue
+/**
+ * Normalizes an existing space token according to the token types on both
+ * sides, and records which side contains redundant spacing when collapsing
+ * multiple spaces to a single space.
+ */
+function processSpaceToken(ctx: TokenContext, result: FixBoundarySpaceResult): void {
+  const { prev, current, next } = ctx
+  if (!current)
+    return
 
-    if (current.type === TEXT_TYPE.space) {
-      const isCjkToAlphanumeric = prev?.type === TEXT_TYPE.cjk && isAlphanumeric(next?.type)
-      const isAlphanumericToCjk = isAlphanumeric(prev?.type) && next?.type === TEXT_TYPE.cjk
-      const isAlphanumericToAlphanumeric = isAlphanumeric(prev?.type) && isAlphanumeric(next?.type)
-      const hasUnexpectedSpaces = current.value.length !== 1
+  const isCjkToAlphanumeric = prev?.type === TEXT_TYPE.cjk && isAlphanumeric(next?.type)
+  const isAlphanumericToCjk = isAlphanumeric(prev?.type) && next?.type === TEXT_TYPE.cjk
+  const isAlphanumericToAlphanumeric = isAlphanumeric(prev?.type) && isAlphanumeric(next?.type)
+  const hasUnexpectedSpaces = current.value.length !== 1
 
-      if (hasUnexpectedSpaces) {
-        if (isCjkToAlphanumeric || isAlphanumericToAlphanumeric)
-          unexpectedBefore = true
+  if (hasUnexpectedSpaces) {
+    if (isCjkToAlphanumeric || isAlphanumericToAlphanumeric)
+      result.unexpectedBefore = true
 
-        if (isAlphanumericToCjk || isAlphanumericToAlphanumeric)
-          unexpectedAfter = true
-      }
-
-      if (
-        isCjkToAlphanumeric
-        || isAlphanumericToCjk
-        || (isAlphanumericToAlphanumeric && hasUnexpectedSpaces)
-      ) {
-        fixed += ' '
-      }
-      else {
-        fixed += current.value
-      }
-      continue
-    }
-
-    if (isAlphanumeric(current.type)) {
-      if (prev?.type === TEXT_TYPE.cjk) {
-        fixed += ' '
-        missingBefore = true
-      }
-
-      fixed += current.value
-      if (next?.type === TEXT_TYPE.cjk) {
-        fixed += ' '
-        missingAfter = true
-      }
-      continue
-    }
-    fixed += current.value
+    if (isAlphanumericToCjk || isAlphanumericToAlphanumeric)
+      result.unexpectedAfter = true
   }
-  return {
-    fixed,
-    missingBefore,
-    missingAfter,
-    unexpectedBefore,
-    unexpectedAfter,
+
+  if (
+    isCjkToAlphanumeric
+    || isAlphanumericToCjk
+    || (isAlphanumericToAlphanumeric && hasUnexpectedSpaces)
+  ) {
+    result.fixed += ' '
+  }
+  else {
+    result.fixed += current.value
   }
 }
 
+/**
+ * Inserts missing boundary spaces around an alphanumeric token when it is
+ * adjacent to CJK text, while keeping track of the missing side(s) for
+ * reporting.
+ */
+function processAlphanumericToken(ctx: TokenContext, result: FixBoundarySpaceResult): void {
+  const { prev, current, next } = ctx
+  if (!current)
+    return
+
+  if (prev?.type === TEXT_TYPE.cjk) {
+    result.fixed += ' '
+    result.missingBefore = true
+  }
+
+  result.fixed += current.value
+
+  if (next?.type === TEXT_TYPE.cjk) {
+    result.fixed += ' '
+    result.missingAfter = true
+  }
+}
+
+/**
+ * Rebuilds a text node with normalized spacing between CJK and alphanumeric
+ * tokens, and returns both the fixed text and the boundary issues detected
+ * during the pass.
+ */
+function fixBoundarySpace(node: Text): FixBoundarySpaceResult {
+  const { children } = buildTextNodeAst(node)
+  const result: FixBoundarySpaceResult = {
+    fixed: '',
+    missingBefore: false,
+    missingAfter: false,
+    unexpectedBefore: false,
+    unexpectedAfter: false,
+  }
+
+  for (let i = 0; i < children.length; i += 1) {
+    const ctx = getNodeContextByParent(children, i)
+    /* v8 ignore if -- @preserve */
+    if (!ctx.current)
+      continue
+
+    if (ctx.current.type === TEXT_TYPE.space)
+      processSpaceToken(ctx, result)
+    else if (isAlphanumeric(ctx.current.type))
+      processAlphanumericToken(ctx, result)
+    else
+      result.fixed += ctx.current.value
+  }
+
+  return result
+}
+
+/**
+ * Selects the most specific lint message for the combination of missing or
+ * unexpected boundary spaces found in the text node.
+ */
 function getMessageId(boundary: {
   missingBefore: boolean
   missingAfter: boolean

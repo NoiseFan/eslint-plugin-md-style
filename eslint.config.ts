@@ -1,10 +1,10 @@
 import antfu from '@antfu/eslint-config'
+import { createSimplePlugin } from 'eslint-factory'
 
 export default antfu(
   {
     type: 'lib',
     typescript: true,
-    ignores: ['**/example'],
     test: {
       overrides: {
         'test/padding-around-after-all-blocks': 'error',
@@ -16,4 +16,27 @@ export default antfu(
       },
     },
   },
+  createSimplePlugin({
+    name: 'no-src-import-path',
+    include: ['*.ts', '**/*.ts'],
+    create(context) {
+      return {
+        ImportDeclaration(node) {
+          const source = node.source?.value
+          if (typeof source !== 'string' || !source.startsWith('src/'))
+            return
+
+          const nextPath = `@/${source.slice('src/'.length)}`
+
+          context.report({
+            node,
+            message: 'Use @/ aliases instead of src/ import paths.',
+            fix(fixer) {
+              return fixer.replaceText(node.source, `'${nextPath}'`)
+            },
+          })
+        },
+      }
+    },
+  }),
 )

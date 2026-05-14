@@ -10,10 +10,14 @@ export const plugin: ESLint.Plugin = {
   },
 }
 
-const allRuleEntries = Object.keys(rules).map(ruleName => [`md-style/${ruleName}`, 'error'] as const)
+const allRuleEntries: Array<[string, Linter.RuleEntry]> = Object.keys(rules)
+  .map(ruleName => [`md-style/${ruleName}`, 'error'])
 
-const recommendedRules = Object.fromEntries(allRuleEntries)
-const allRules = Object.fromEntries(allRuleEntries)
+const recommendedRules: Partial<Linter.RulesRecord> = {
+  'md-style/valid-heading-anchor': 'error',
+  'md-style/space-between-inline-element': 'error',
+}
+const allRules: Partial<Linter.RulesRecord> = Object.fromEntries(allRuleEntries)
 
 interface PluginConfigMap {
   recommended: Linter.Config

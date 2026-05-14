@@ -1,4 +1,6 @@
-import { createRule, } from '@/utils'
+import type { Text } from 'mdast'
+import { createRule } from '@/utils'
+import { getNodePosition } from '@/utils/ast'
 
 export const RULE_NAME = 'example'
 const MESSAGE_IDS = {
@@ -23,7 +25,17 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create(context) {
-    return{}
+    return {
+      text(node: Text) {
+        const { position } = getNodePosition(node)
+        /* v8 ignore if -- @preserve */
+        if (!position)
+          return
+        context.report({
+          node,
+          messageId: MESSAGE_IDS.exampleMsgId,
+        })
+      },
     }
-  }
-)
+  },
+})

@@ -19,7 +19,7 @@ const valid: ValidTestCase[] = [
     code: '在 [入门指南](/guide/)。',
   },
   {
-    description: 'no spaces around link between chinese punctuations',
+    description: 'no spaces around link surrounded by chinese punctuations',
     code: '在。[入门指南](/guide/)。',
   },
   {
@@ -76,7 +76,7 @@ const valid: ValidTestCase[] = [
     code: 'a permissive [link](/link) - node',
   },
   {
-    description: 'single spaces around link between hyphens',
+    description: 'single spaces around link surrounded by hyphens',
     code: 'a permissive - [link](/link) - node',
   },
   {
@@ -257,7 +257,7 @@ const invalid: InvalidTestCase[] = [
   },
   // inline element 递归情况
   {
-    description: 'missing space between adjacent links',
+    description: 'missing space around adjacent links',
     code: '[link1](/link1)[link2](/link2)',
     output: '[link1](/link1) [link2](/link2)',
     errors: [{ messageId: MESSAGE_IDS.missingSpaceBefore }],
@@ -360,7 +360,7 @@ const invalid: InvalidTestCase[] = [
     errors: [{ messageId: MESSAGE_IDS.missingSpaceAfter }],
   },
   {
-    description: 'missing space between adjacent selected inline elements',
+    description: 'missing space around adjacent selected inline elements',
     code: '_emphasis_[link](/link)`code`**strong**![alt](/img.png)',
     output: '_emphasis_ [link](/link) `code` **strong** ![alt](/img.png)',
     errors: [

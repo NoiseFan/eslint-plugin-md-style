@@ -1,4 +1,4 @@
-# Space Between Inline Elements
+# Space Around Inline Elements
 
 Keep spacing around Markdown inline elements consistent.
 
@@ -6,7 +6,7 @@ This rule focuses on `link`, `image`, `inlineCode`, `emphasis`, and `strong` nod
 
 ## Rule Details
 
-By default, this rule requires exactly one space between selected inline elements and adjacent plain text.
+By default, this rule requires selected inline elements to have exactly one space around them when they are adjacent to plain text.
 
 This rule only checks the following node types: `link`, `image`, `inlineCode`, `emphasis`, and `strong`.
 
@@ -20,8 +20,8 @@ In addition to normal text flow, the rule adjusts its spacing requirements based
 - If an inline element is followed by a dash-like punctuation mark or a halfwidth opening parenthesis, there must be exactly one space after it.
 
 :::tip
-1. Adjacent selected inline elements are normalized so that only the required spacing remains between them. For example: `` `snapshotA`/`snapshotB` `` and `**CLI option:** \`--browser.ui\``.
-2. Leading and trailing whitespace inside table cells is ignored by this rule, but spacing between multiple inline elements inside the same cell is still checked.
+1. Adjacent selected inline elements are normalized so that only the required spacing remains around them. For example: `` `snapshotA`/`snapshotB` `` and `**CLI option:** \`--browser.ui\``.
+2. Leading and trailing whitespace inside table cells is ignored by this rule, but spacing around multiple inline elements inside the same cell is still checked.
 3. Special cases such as trailing heading anchors and VitePress custom container markers are skipped to avoid merging content into the next line or into an anchor.
 :::
 

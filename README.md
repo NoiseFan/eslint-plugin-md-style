@@ -70,7 +70,7 @@ export default [
     },
     language: 'md-style/gfm',
     rules: {
-      'md-style/space-between-inline-element': 'error',
+      'md-style/space-around-inline-element': 'error',
       'md-style/valid-heading-anchor': 'error',
     },
   },
@@ -120,7 +120,7 @@ export default antfu(
 
 | Rule | Included in `recommended` | Autofix |
 | --- | --- | --- |
-| `md-style/space-between-inline-element` | ✅ | 🔧 |
+| `md-style/space-around-inline-element` | ✅ | 🔧 |
 | `md-style/valid-heading-anchor` | ✅ | 🔧 |
 
 ## Why `@eslint/markdown` Is Required

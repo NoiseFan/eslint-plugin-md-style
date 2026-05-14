@@ -6,7 +6,7 @@ import { getNodeContext, getNodePosition, isNestedInlineElement } from '@/utils/
 import { INLINE_SPACE_MESSAGE_IDS as MESSAGE_IDS, validateSpace } from '@/utils/inline-element'
 import { getSpaceContext } from '@/utils/space'
 
-export const RULE_NAME = 'space-between-inline-element'
+export const RULE_NAME = 'space-around-inline-element'
 
 type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
 type Options = []

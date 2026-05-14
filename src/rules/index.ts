@@ -1,9 +1,9 @@
+import spaceAroundInlineElement from './space-around-inline-element/index'
 import spaceAroundWord from './space-around-word'
-import spaceBetweenInlineElemnt from './space-between-inline-element/index'
 import validHeadingAnchor from './valid-heading-anchor/index'
 
 export const rules = {
-  'space-between-inline-element': spaceBetweenInlineElemnt,
+  'space-around-inline-element': spaceAroundInlineElement,
   'valid-heading-anchor': validHeadingAnchor,
   'space-around-word': spaceAroundWord,
 }

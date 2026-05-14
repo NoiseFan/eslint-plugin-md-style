@@ -1,4 +1,4 @@
-# Space between inline elemnt
+# Space Around Inline Elements
 
 保持 Markdown 行内元素周围的空格风格一致。
 

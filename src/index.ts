@@ -15,7 +15,7 @@ const allRuleEntries: Array<[string, Linter.RuleEntry]> = Object.keys(rules)
 
 const recommendedRules: Partial<Linter.RulesRecord> = {
   'md-style/valid-heading-anchor': 'error',
-  'md-style/space-between-inline-element': 'error',
+  'md-style/space-around-inline-element': 'error',
 }
 const allRules: Partial<Linter.RulesRecord> = Object.fromEntries(allRuleEntries)
 

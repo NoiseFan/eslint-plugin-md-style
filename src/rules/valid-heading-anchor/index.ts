@@ -1,3 +1,4 @@
+import type { ValueOf } from '@/types'
 import { createRule } from '@/utils'
 import { calcAnchorPositionCompensate, getLikeAnchor, hasChinese, isStrictAnchor, normalizeAnchor } from '@/utils/anchor'
 import { getNodeContext, getNodePosition } from '@/utils/ast'
@@ -9,7 +10,7 @@ const MESSAGE_IDS = {
   invalidHeadingAnchor: 'invalidHeadingAnchor',
 } as const
 type Options = []
-type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
+type MessageIds = ValueOf<typeof MESSAGE_IDS>
 
 export default createRule<Options, MessageIds>({
   name: RULE_NAME,

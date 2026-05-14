@@ -1,4 +1,5 @@
 import type { Text } from 'mdast'
+import type { ValueOf } from '@/types'
 import { TEXT_TYPE } from '@/types/text-tokenizer'
 import { createRule } from '@/utils'
 import { getNodeContextByParent } from '@/utils/ast'
@@ -14,7 +15,8 @@ export const MESSAGE_IDS = {
   unexpectedSpaceAround: 'unexpectedSpaceAround',
 } as const
 
-type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
+type MessageIds = ValueOf<typeof MESSAGE_IDS>
+
 type Options = []
 
 export default createRule<Options, MessageIds>({

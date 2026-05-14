@@ -1,4 +1,5 @@
 import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
+import type { ValueOf } from '@/types/index'
 import type { INLINE_SPACE_MESSAGE_IDS } from '@/types/inline-element'
 
 /**
@@ -9,7 +10,7 @@ export type InlineElement = Link | Image | InlineCode | Emphasis | Strong
 /**
  * The allowed issue ids for inline element spacing rules.
  */
-export type InlineElementSpaceIssue = typeof INLINE_SPACE_MESSAGE_IDS[keyof typeof INLINE_SPACE_MESSAGE_IDS]
+export type InlineElementSpaceIssue = ValueOf<typeof INLINE_SPACE_MESSAGE_IDS>
 
 /**
  * The relative position to check for spacing.

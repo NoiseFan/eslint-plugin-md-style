@@ -42,3 +42,5 @@ export type RuleContext<MessageIds extends string, Options extends unknown[]> = 
 >[0]
 
 export type RuleListener = MarkdownRuleVisitor
+
+export type ValueOf<T> = T[keyof T]

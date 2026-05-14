@@ -1,4 +1,5 @@
 import type { Text } from 'mdast'
+import type { ValueOf } from '@/types/index'
 
 export const TEXT_TYPE = {
   'cjk': 'cjk',
@@ -15,7 +16,7 @@ export const TEXT_TYPE = {
   'other': 'other',
 } as const
 
-export type TextType = typeof TEXT_TYPE[keyof typeof TEXT_TYPE]
+export type TextType = ValueOf<typeof TEXT_TYPE>
 
 /**
  * Source location point compatible with mdast position points

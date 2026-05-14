@@ -1,5 +1,5 @@
 import type { Emphasis, Image, InlineCode, Link, Strong } from 'mdast'
-import type { RuleContext } from '@/types'
+import type { RuleContext, ValueOf } from '@/types'
 import type { InlineElement } from '@/types/inline-element'
 import { createRule } from '@/utils'
 import { getNodeContext, getNodePosition, isNestedInlineElement } from '@/utils/ast'
@@ -8,7 +8,7 @@ import { getSpaceContext } from '@/utils/space'
 
 export const RULE_NAME = 'space-around-inline-element'
 
-type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
+type MessageIds = ValueOf<typeof MESSAGE_IDS>
 type Options = []
 
 const BEFORE_INLINE_ELEMENT_MESSAGE_IDS = new Set<MessageIds>([

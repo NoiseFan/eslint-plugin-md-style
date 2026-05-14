@@ -1,4 +1,5 @@
 import type { Text } from 'mdast'
+import type { ValueOf } from '@/types'
 import { createRule } from '@/utils'
 import { getNodePosition } from '@/utils/ast'
 
@@ -7,7 +8,7 @@ const MESSAGE_IDS = {
   exampleMsgId: 'exampleMsgId',
 } as const
 
-type MessageIds = typeof MESSAGE_IDS[keyof typeof MESSAGE_IDS]
+type MessageIds = ValueOf<typeof MESSAGE_IDS>
 type Options = []
 
 export default createRule<Options, MessageIds>({

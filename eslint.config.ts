@@ -15,6 +15,10 @@ export default antfu(
         'test/padding-around-test-blocks': 'error',
       },
     },
+    ignores: [
+      'docs/rules',
+      'tests/fixtures',
+    ],
   },
   createSimplePlugin({
     name: 'no-src-import-path',

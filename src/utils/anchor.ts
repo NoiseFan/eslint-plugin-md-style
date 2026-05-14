@@ -61,7 +61,7 @@ export function hasChinese(str: string): boolean {
  */
 export function normalizeAnchor(anchor: string): string {
   const lowerCaseAnchor = anchor.toLowerCase()
-  const completeHyphen = lowerCaseAnchor.replace(/[\s.]/g, '-')
+  const completeHyphen = lowerCaseAnchor.replace(/[\s.]+/g, '-')
   const keepLegalCharacters = completeHyphen.replace(/[^a-z0-9_-]/g, '')
   return keepLegalCharacters.replace(/^-+|-+$/g, '')
 }

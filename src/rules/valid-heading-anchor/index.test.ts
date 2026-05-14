@@ -66,6 +66,12 @@ const invalid: InvalidTestCase[] = [
     output: '# 中文标题 {#foo_bar123}',
     errors: [{ messageId: 'invalidHeadingAnchor' }],
   },
+  {
+    description: 'should collapse multiple spaces in anchor fix',
+    code: '# 中文标题 {#Chinese   Title}',
+    output: '# 中文标题 {#chinese-title}',
+    errors: [{ messageId: 'missingAnchor' }],
+  },
 ]
 
 run({

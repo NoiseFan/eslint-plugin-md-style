@@ -85,6 +85,11 @@ describe('normalizeAnchor', () => {
     expect(normalizeAnchor('中文-title')).toBe('title')
   })
 
+  it('should collapse repeated spaces into a single hyphen', () => {
+    expect(normalizeAnchor('Your  first test')).toBe('your-first-test')
+    expect(normalizeAnchor('Your   first    test')).toBe('your-first-test')
+  })
+
   it('should preserve digits and hyphens', () => {
     expect(normalizeAnchor('intro-2')).toBe('intro-2')
     expect(normalizeAnchor('API-Reference_v2')).toBe('api-reference_v2')

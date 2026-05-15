@@ -25,6 +25,10 @@ describe('tokenizeText', () => {
     await expect(JSON.stringify(tokenizeText('中文 Vitest 4.1，OK'), null, 2)).toMatchFileSnapshot('__snapshots__/tokenizeText-groups-same-type-chars.json')
   })
 
+  it('keeps decimal and percent suffixes in the same number token', async () => {
+    await expect(JSON.stringify(tokenizeText('中文 4.0% 增长'), null, 2)).toMatchFileSnapshot('__snapshots__/tokenizeText-groups-number-fragments.json')
+  })
+
   it('keeps code unit offsets', async () => {
     await expect(JSON.stringify(tokenizeText('a🙂中'), null, 2)).toMatchFileSnapshot('__snapshots__/tokenizeText-keeps-code-unit-offsets.json')
   })

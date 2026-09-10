@@ -15,6 +15,16 @@
   "bugs": {
     "url": "https://github.com/NoiseFan/eslint-plugin-md-style/issues"
   },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "markdown",
+    "lint",
+    "linter",
+    "documentation",
+    "vitepress"
+  ],
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"

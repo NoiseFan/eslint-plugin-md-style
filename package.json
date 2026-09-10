@@ -22,7 +22,7 @@
     "test:cov": "vitest --coverage",
     "publish:ci": "pnpm --filter eslint-plugin-md-style publish:ci",
     "gen:rules": "pnpm --filter eslint-plugin-md-style gen:rules",
-    "release": "bumpp -r",
+    "release": "bumpp -r --execute \"pnpm gen:rules\"",
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "vitest": "catalog:test"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm gen:rules && pnpx lint-staged"
+    "pre-commit": "pnpx lint-staged"
   },
   "lint-staged": {
     "*.{js,ts,md,yml,yaml,json}": [

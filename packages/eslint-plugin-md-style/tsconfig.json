@@ -15,8 +15,11 @@
     "esModuleInterop": true
   },
   "include": [
-    "src",
+    "parser",
+    "rules",
+    "scripts",
     "tests",
-    "scripts"
+    "types",
+    "utils"
   ]
 }

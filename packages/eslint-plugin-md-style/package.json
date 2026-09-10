@@ -9,7 +9,8 @@
   "homepage": "https://github.com/NoiseFan/eslint-plugin-md-style#readme",
   "repository": {
     "type": "git",
-    "url": "git+github.com:NoiseFan/eslint-plugin-md-style.git"
+    "url": "git+https://github.com/NoiseFan/eslint-plugin-md-style",
+    "directory": "packages/eslint-plugin-md-style"
   },
   "bugs": {
     "url": "https://github.com/NoiseFan/eslint-plugin-md-style/issues"

@@ -43,3 +43,23 @@ Asserts that`value`is a function.
 `toMatchSnapshot()` / `toMatchInlineSnapshot()` / `toMatchFileSnapshot()`
 
 The`-t` (or `--testNamePattern`  ) option filters by the ( `test's` name) rather than the filename.
+
+<!-- nested inline elements -->
+
+[Use`code`now](/)
+
+[Read**important**details](/)
+
+[Read*emphasized*details](/)
+
+[See[alt](/image.png)now](/target)
+
+*Run`command`now*
+
+**Read[guide](/guide)now**
+
+*Read**important**now*
+
+**Read*important*now**
+
+[Use`code`**bold**now](/)

@@ -125,14 +125,6 @@ export function isInlineElement(node: PhrasingContent | Parents | undefined): no
   return !!node && INLINE_ELEMENT_TYPES.has(node.type)
 }
 
-/**
- * Checks whether the current inline element is nested inside another selected inline element.
- */
-export function isNestedInlineElement(nodeContext: NodeContextReturnType<InlineElement>): boolean {
-  const { parent } = nodeContext
-  return isInlineElement(parent)
-}
-
 export function getSpaceContext(
   nodeContext: NodeContextReturnType<PhrasingContent>,
 ): SpaceContext {

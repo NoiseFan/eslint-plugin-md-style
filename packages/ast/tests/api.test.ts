@@ -1,7 +1,7 @@
+import type { CustomContainer } from '@/'
 import type { BlockContent, RootContent } from 'mdast'
-import type { CustomContainer } from '../src/index'
+import * as api from '@/'
 import { describe, expect, expectTypeOf, it } from 'vitest'
-import * as api from '../src/index'
 
 describe('public API', () => {
   it('exports only the designed runtime functions', () => {

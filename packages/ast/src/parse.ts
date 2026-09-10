@@ -29,6 +29,7 @@ export function parseMarkdown(source: string | Uint8Array, options: ParseMarkdow
     const containerOptions = options.customContainer === true || options.customContainer === undefined
       ? undefined
       : options.customContainer
+
     syntaxExtensions.push(customContainer(containerOptions))
     mdastExtensions.push(customContainerFromMarkdown(containerOptions))
   }

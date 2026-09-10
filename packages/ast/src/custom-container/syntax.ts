@@ -3,9 +3,9 @@ import type { CustomContainerOptions } from './types'
 import { factorySpace } from 'micromark-factory-space'
 import { markdownLineEnding, markdownSpace } from 'micromark-util-character'
 
-const COLON = 58
-const LEFT_BRACE = 123
-const RIGHT_BRACE = 125
+const COLON = 58 // :
+const LEFT_BRACE = 123 // {
+const RIGHT_BRACE = 125 // }
 
 interface ContainerToken extends Token {
   _customContainerClosing?: boolean

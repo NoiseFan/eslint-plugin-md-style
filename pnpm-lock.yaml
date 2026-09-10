@@ -88,6 +88,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: catalog:test
         version: 4.1.11(vitest@4.1.11)
+      bumpp:
+        specifier: catalog:script
+        version: 12.3.0
       eslint:
         specifier: catalog:lint
         version: 10.8.1(jiti@2.7.0)
@@ -145,9 +148,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: catalog:test
         version: 4.1.11(vitest@4.1.11)
-      bumpp:
-        specifier: catalog:script
-        version: 12.3.0
       eslint-plugin-format:
         specifier: catalog:lint
         version: 2.0.1(eslint@10.8.1(jiti@2.7.0))

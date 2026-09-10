@@ -22,12 +22,13 @@
     "test:cov": "vitest --coverage",
     "publish:ci": "pnpm --filter eslint-plugin-md-style publish:ci",
     "gen:rules": "pnpm --filter eslint-plugin-md-style gen:rules",
-    "release": "pnpm --filter eslint-plugin-md-style release",
+    "release": "bumpp -r",
     "prepare": "simple-git-hooks"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:lint",
     "@vitest/coverage-v8": "catalog:test",
+    "bumpp": "catalog:script",
     "eslint": "catalog:lint",
     "eslint-factory": "catalog:lint",
     "eslint-plugin-md-style": "catalog:lint",

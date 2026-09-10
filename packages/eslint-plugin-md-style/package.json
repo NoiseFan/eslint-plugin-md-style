@@ -37,7 +37,6 @@
     "test": "vitest",
     "test:cov": "vitest --coverage",
     "typecheck": "tsc --noEmit",
-    "release": "bumpp",
     "prepublishOnly": "pnpm gen:rules && pnpm build"
   },
   "peerDependencies": {
@@ -57,7 +56,6 @@
     "@types/unist": "catalog:types",
     "@typescript-eslint/utils": "catalog:dev",
     "@vitest/coverage-v8": "catalog:test",
-    "bumpp": "catalog:script",
     "eslint-plugin-format": "catalog:lint",
     "eslint-plugin-md-style": "catalog:lint",
     "eslint-typegen": "catalog:lint",

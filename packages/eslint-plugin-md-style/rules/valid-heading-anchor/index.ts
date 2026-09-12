@@ -61,14 +61,16 @@ export default createRule<Options, MessageIds>({
         const remainingContent = source.slice(0, -rawLikeAnchor.length - compensate).trim()
 
         const anchor = normalizeAnchor(rawLikeAnchor)
-        if (rawLikeAnchor === anchor)
+        const fixed = `${remainingContent} {#${anchor}}`
+
+        if (source === fixed)
           return
 
         context.report({
           node,
           messageId: isLikeAnchor ? MESSAGE_IDS.missingAnchor : MESSAGE_IDS.invalidHeadingAnchor,
           fix(fixer) {
-            return fixer.replaceTextRange([start, end], `${remainingContent} {#${anchor}}`)
+            return fixer.replaceTextRange([start, end], fixed)
           },
         })
       },

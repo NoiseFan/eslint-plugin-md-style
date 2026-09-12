@@ -4,7 +4,7 @@ import type { RuleContext } from '@/types'
 import type { ValueOf } from '@/types/utils'
 import { getNodeContext, getNodePosition } from '@/parser/ast'
 import { createRule } from '@/utils'
-import { getSpaceContext, isNestedInlineElement, validateSpace } from './analyze'
+import { getSpaceContext, validateSpace } from './analyze'
 
 export const RULE_NAME = 'space-around-inline-element'
 export const MESSAGE_IDS = {
@@ -88,8 +88,6 @@ function checkInlineElement(context: RuleContext<MessageIds, Options>, node: Inl
     return
 
   const nodeContext = getNodeContext(context, node)
-  if (isNestedInlineElement(nodeContext))
-    return
 
   const spaceContext = getSpaceContext(nodeContext)
   const issue = validateSpace(nodeContext)

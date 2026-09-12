@@ -1,20 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "moduleDetection": "force",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "resolveJsonModule": true,
-    "types": [
-      "node",
-      "vitest/globals"
-    ],
-    "noUnusedLocals": true,
-    "esModuleInterop": true
-  },
-  "include": [
-    "src",
-    "tests"
-  ]
+  "include": ["src"]
 }

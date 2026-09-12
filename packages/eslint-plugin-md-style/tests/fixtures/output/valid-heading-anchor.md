@@ -39,3 +39,7 @@ test('assert.equal', () => {
 <!-- use vue-component to render markdown -->
 
 # Custom Pool <Badge type="danger">advanced</Badge> {#custom-pool}
+
+<!-- with parentheses -->
+
+### `vitest`（默认） {#vitest-default}

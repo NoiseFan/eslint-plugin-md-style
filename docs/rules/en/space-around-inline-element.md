@@ -30,6 +30,9 @@ See, [Getting Started](/guide/) guide.
 See [Getting Started](/guide/).
 Use `-t` (or `--testNamePattern`) to filter.
 See details in (`option` notes).
+[Use `code` now](/guide/)
+*Read **important** details*
+**Read [guide](/guide/) now**
 `toMatchSnapshot()`/`toMatchInlineSnapshot()`/`toMatchFileSnapshot()`
 | Item | Value |
 | --- | --- |
@@ -78,9 +81,27 @@ The above example is fixed to:
 _emphasis_ [link](/link) `code` **strong** ![alt](/img.png)
 ```
 
+Nested inline elements are also checked against text and other inline elements inside their parent:
+
+```md
+[Use`code`now](/guide/)
+[Read**important**details](/guide/)
+*Run`command`now*
+**Read[guide](/guide/)now**
+```
+
+The above examples are fixed to:
+
+```md
+[Use `code` now](/guide/)
+[Read **important** details](/guide/)
+*Run `command` now*
+**Read [guide](/guide/) now**
+```
+
 ## Autofix
 
-This rule is autofixable. It changes only the whitespace immediately before or after the reported inline element: missing or extra required whitespace becomes one space, and unexpected whitespace is removed. The element itself, punctuation, and text content are not changed. Nested selected inline elements are not reported separately; the corresponding boundary is handled by the outer element.
+This rule is autofixable. It changes only the whitespace immediately before or after the reported inline element: missing or extra required whitespace becomes one space, and unexpected whitespace is removed. The element itself, punctuation, and text content are not changed. Nested selected inline elements are fixed at their own sibling boundaries, while the outer element handles its boundaries in the surrounding container. A nested element with no adjacent sibling does not produce a duplicate report.
 
 ## When Not To Use It
 

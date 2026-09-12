@@ -55,6 +55,12 @@ const invalid: InvalidTestCase[] = [
     errors: [{ messageId: 'missingAnchor' }],
   },
   {
+    description: 'normalized loose anchor should be wrapped in braces',
+    code: '### `vitest`（默认）#vitest-default',
+    output: '### `vitest`（默认） {#vitest-default}',
+    errors: [{ messageId: 'invalidHeadingAnchor' }],
+  },
+  {
     description: 'should be no capital letters',
     code: '# 中文标题 {#Chinese-Title}',
     output: '# 中文标题 {#chinese-title}',

@@ -148,6 +148,12 @@ const invalid: InvalidTestCase[] = [
     errors: [{ messageId: MESSAGE_IDS.missingSpaceBefore }],
   },
   {
+    description: 'missing space before inline code inside link after chinese text',
+    code: '[Use`code` now](/)',
+    output: '[Use `code` now](/)',
+    errors: [{ messageId: MESSAGE_IDS.missingSpaceBefore }],
+  },
+  {
     description: 'missing space before link after english text',
     code: 'In the[Getting Started](/guide/) guide,',
     output: 'In the [Getting Started](/guide/) guide,',

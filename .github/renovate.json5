@@ -20,5 +20,6 @@
       "pinDigests": true
     }
   ],
+  "ignoreDeps": ["node"],
   "ignorePaths": ["**/node_modules/**"]
 }

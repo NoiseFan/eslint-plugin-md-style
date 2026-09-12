@@ -32,8 +32,8 @@ catalogs:
     simple-git-hooks: ^2.14.0
     tsx: ^4.23.13
   test:
-    '@vitest/coverage-v8': ^4.1.11
-    vitest: ^4.1.11
+    '@vitest/coverage-v8': ^5.0.0
+    vitest: ^5.0.0
   types:
     '@types/mdast': ^4.0.4
     '@types/node': ^26.5.1

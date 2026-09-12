@@ -11,6 +11,10 @@
       "enabled": false
     },
     {
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7"
+    },
+    {
       "matchDepTypes": ["action"],
       "matchPackageNames": ["!actions/{/,}**", "!github/{/,}**"],
       "pinDigests": true

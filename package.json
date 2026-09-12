@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.3.1",
   "private": true,
-  "packageManager": "pnpm@10.34.5",
+  "packageManager": "pnpm@12.4.1",
   "description": "ESLint plugin for enforcing style rules in Markdown-based documentation",
   "author": "noisefan <noisefan@163.com>",
   "license": "MIT",

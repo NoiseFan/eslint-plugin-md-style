@@ -4,7 +4,7 @@
   "timezone": "Asia/Shanghai",
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
-  "minimumReleaseAge": "1 day",
+  "minimumReleaseAge": "14 day",
   "packageRules": [
     {
       "matchDepTypes": ["peerDependencies"],

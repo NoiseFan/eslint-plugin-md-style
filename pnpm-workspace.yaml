@@ -16,7 +16,7 @@ catalogs:
     '@typescript-eslint/utils': ^8.70.0
     tinyglobby: ^0.2.17
     typescript: ^6.0.3
-    yaml: ^2.9.0
+    yaml: ^2.9.1
   lint:
     '@antfu/eslint-config': ^9.5.1
     '@eslint/markdown': ^8.0.3

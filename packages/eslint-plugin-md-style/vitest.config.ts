@@ -11,6 +11,11 @@ export default defineConfig({
   },
   test: {
     globals: true,
+    server: {
+      deps: {
+        inline: ['eslint-vitest-rule-tester'],
+      },
+    },
     include: ['**/*.test.ts'],
     exclude: [
       ...configDefaults.exclude,

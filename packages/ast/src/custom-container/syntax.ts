@@ -1,6 +1,5 @@
 import type { Code, Construct, Effects, Extension, State, Token, TokenizeContext } from 'micromark-util-types'
 import type { CustomContainerOptions } from './types'
-import { factorySpace } from 'micromark-factory-space'
 import { markdownLineEnding, markdownSpace } from 'micromark-util-character'
 
 const COLON = 58 // :
@@ -51,7 +50,7 @@ function tokenizeCustomContainer(
 
   let openMarkerLength = 0
   let contentPrevious: Token | undefined
-  const closingFence: Construct = { partial: true, tokenize: tokenizeClosingFence }
+  const closingFence: Construct = { tokenize: tokenizeClosingFence }
   const attr: Construct = { partial: true, tokenize: tokenizeAttr }
   const attrSuffix: Construct = { partial: true, tokenize: tokenizeAttrSuffix }
   const nonLazyLine: Construct = { partial: true, tokenize: tokenizeNonLazyLine }
@@ -69,7 +68,6 @@ function tokenizeCustomContainer(
   }
 
   function openSequence(code: Code): State | undefined {
-    // console.log('[]', { COLON, code })
     if (code === COLON) {
       openMarkerLength++
       effects.consume(code)
@@ -78,6 +76,7 @@ function tokenizeCustomContainer(
     if (openMarkerLength < 3 || !markdownSpace(code))
       return nok(code)
     effects.exit('customContainerFenceSequence')
+    // 这为什么要消费 2 次？ 是因为可能有多个空格
     effects.enter('whitespace')
     effects.consume(code)
     return openWhitespace
@@ -110,17 +109,6 @@ function tokenizeCustomContainer(
     return finishOpening(code)
   }
 
-  function finishOpening(code: Code): State | undefined {
-    if (code !== null && !markdownLineEnding(code))
-      return nok(code)
-    effects.exit('customContainerFence')
-    if (code === null)
-      return after(code)
-    if (self.interrupt)
-      return ok(code)
-    return effects.attempt(nonLazyLine, contentStart, after)(code)
-  }
-
   function suffixWhitespace(code: Code): State | undefined {
     if (markdownSpace(code)) {
       effects.consume(code)
@@ -128,7 +116,7 @@ function tokenizeCustomContainer(
     }
     effects.exit('whitespace')
     if (code === LEFT_BRACE)
-      return effects.attempt(attr, finishOpening, labelStart)(code)
+      return effects.attempt(attr, finishOpening, nok)(code)
     if (code === null || markdownLineEnding(code))
       return finishOpening(code)
     return labelStart(code)
@@ -151,6 +139,8 @@ function tokenizeCustomContainer(
   }
 
   function labelData(code: Code): State | undefined {
+    if (code === LEFT_BRACE)
+      return nok(code)
     effects.consume(code)
     return label
   }
@@ -158,6 +148,17 @@ function tokenizeCustomContainer(
   function labelBeforeAttr(code: Code): State | undefined {
     effects.exit('customContainerLabel')
     return effects.attempt(attrSuffix, finishOpening, nok)(code)
+  }
+
+  function finishOpening(code: Code): State | undefined {
+    if (code !== null && !markdownLineEnding(code))
+      return nok(code)
+    effects.exit('customContainerFence')
+    if (code === null)
+      return after(code)
+    if (self.interrupt)
+      return ok(code)
+    return effects.attempt(nonLazyLine, contentStart, after)(code)
   }
 
   function contentStart(code: Code): State | undefined {
@@ -178,9 +179,7 @@ function tokenizeCustomContainer(
     return effects.attempt(
       closingFence,
       afterContent,
-      initialIndent
-        ? factorySpace(effects, chunkStart, 'linePrefix', initialIndent + 1)
-        : chunkStart,
+      chunkStart,
     )(code)
   }
 
@@ -329,6 +328,8 @@ function tokenizeCustomContainer(
     attrOk: State,
     attrNok: State,
   ): State {
+    // eslint-disable-next-line ts/no-this-alias
+    const context = this
     let hasValue = false
     return attrStart
 
@@ -368,6 +369,8 @@ function tokenizeCustomContainer(
         return attrWhitespace
       }
       attrEffects.exit('whitespace')
+      if (code === LEFT_BRACE)
+        return tokenizeAttr.call(context, attrEffects, attrOk, attrNok)(code)
       return code === null || markdownLineEnding(code) ? attrOk(code) : attrNok(code)
     }
   }

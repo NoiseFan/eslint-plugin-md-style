@@ -1,6 +1,6 @@
-import type { CustomContainer } from '@/'
-import { parseMarkdown } from '@/'
+import type { CustomContainer } from '@/custom-container/types'
 import { describe, expect, it } from 'vitest'
+import { parseMarkdown } from '@/parse'
 
 function firstContainer(source: string): CustomContainer {
   const node = parseMarkdown(source).children[0]
@@ -91,9 +91,9 @@ describe('customContainerFromMarkdown', () => {
     expect(container.tag.close?.markerLength).toBe(4)
   })
 
-  it('omits closeTag on an unclosed container', () => {
+  it('omits the close tag on an unclosed container', () => {
     const container = firstContainer('::: warning\nbody')
-    expect(container).not.toHaveProperty('closeTag')
+    expect(container.tag).not.toHaveProperty('close')
     expect(container.position?.end).toEqual({ line: 2, column: 5, offset: 16 })
   })
 
@@ -158,7 +158,7 @@ describe('customContainerFromMarkdown', () => {
   it('accepts an equal or longer closing fence and trailing whitespace only', () => {
     expect(firstContainer('::: info\na\n:::').tag.close?.markerLength).toBe(3)
     expect(firstContainer('::: info\na\n::::  ').tag.close?.markerLength).toBe(4)
-    expect(firstContainer('::: info\na\n::: trailing')).not.toHaveProperty('closeTag')
+    expect(firstContainer('::: info\na\n::: trailing').tag).not.toHaveProperty('close')
   })
 
   it.each([0, 1, 2, 3])('accepts %i leading spaces', (indent) => {

@@ -1,6 +1,6 @@
-import { customContainer, customContainerFromMarkdown, parseMarkdown } from '@/'
 import { fromMarkdown } from 'mdast-util-from-markdown'
 import { describe, expect, it } from 'vitest'
+import { customContainer, customContainerFromMarkdown, parseMarkdown } from '@/index'
 
 describe('parseMarkdown', () => {
   it('parses CommonMark and preserves source positions', () => {

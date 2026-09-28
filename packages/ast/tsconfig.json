@@ -1,4 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src"]
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@": ["./src/index.ts"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "tests"]
 }

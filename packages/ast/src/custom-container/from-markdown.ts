@@ -99,10 +99,10 @@ function syntaxStart(token: ContainerToken): Point {
   }
 }
 
-function publicPoint(point: Token['start']): Point {
+function publicPoint(point: Point): Point {
   return { line: point.line, column: point.column, offset: point.offset }
 }
 
-function shiftPoint(point: Token['start'], delta: number): Point {
-  return { line: point.line, column: point.column + delta, offset: point.offset + delta }
+function shiftPoint(point: Point, delta: number): Point {
+  return { line: point.line, column: point.column + delta, offset: (point.offset ?? 0) + delta }
 }

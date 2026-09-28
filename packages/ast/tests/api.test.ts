@@ -1,7 +1,7 @@
-import type { CustomContainer } from '@/'
 import type { BlockContent, RootContent } from 'mdast'
-import * as api from '@/'
+import type { CustomContainer } from '@/index'
 import { describe, expect, expectTypeOf, it } from 'vitest'
+import * as api from '@/index'
 
 describe('public API', () => {
   it('exports only the designed runtime functions', () => {
@@ -15,7 +15,7 @@ describe('public API', () => {
   it('registers custom containers as mdast block and root content', () => {
     const node: CustomContainer = {
       type: 'customContainer',
-      openTag: { type: 'info', markerLength: 3 },
+      tag: { open: { type: { value: 'info' }, markerLength: 3 } },
       children: [],
     }
     const block: BlockContent = node

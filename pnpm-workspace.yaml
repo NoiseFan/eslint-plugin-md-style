@@ -1,5 +1,10 @@
 minimumReleaseAgeExcludePrune: true
+
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - why-is-node-running@3.2.2
+trustPolicyExcludePrune: true
+
 shellEmulator: true
 
 packages:

@@ -1,6 +1,7 @@
 import type { ESLint, Linter } from 'eslint'
 import type { RuleOptions } from './types'
-import markdown, { MarkdownLanguage } from '@eslint/markdown'
+import markdown from '@eslint/markdown'
+import { MdStyleMarkdownLanguage } from './parser/language'
 import { rules } from './rules'
 
 export type { RuleOptions } from './types'
@@ -9,7 +10,7 @@ export const plugin: ESLint.Plugin = {
   rules,
   processors: markdown.processors,
   languages: {
-    gfm: new MarkdownLanguage({ mode: 'gfm' }),
+    gfm: new MdStyleMarkdownLanguage({ mode: 'gfm' }),
   },
 }
 

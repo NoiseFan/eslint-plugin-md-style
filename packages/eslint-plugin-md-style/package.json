@@ -46,6 +46,7 @@
     "publish:ci": "tsx scripts/publish.ts",
     "dev": "tsdown --watch",
     "test": "vitest",
+    "bench": "vitest bench",
     "test:cov": "vitest --coverage",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "pnpm gen:rules && pnpm build"
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@eslint/markdown": "catalog:lint",
+    "@md-style/ast": "workspace:*",
     "@types/mdast": "catalog:types",
     "@types/node": "catalog:types",
     "@types/unist": "catalog:types",
@@ -71,6 +73,13 @@
     "eslint-plugin-md-style": "catalog:lint",
     "eslint-typegen": "catalog:lint",
     "eslint-vitest-rule-tester": "catalog:lint",
+    "mdast-util-from-markdown": "catalog:dev",
+    "mdast-util-frontmatter": "catalog:dev",
+    "mdast-util-gfm": "catalog:dev",
+    "mdast-util-math": "catalog:dev",
+    "micromark-extension-frontmatter": "catalog:dev",
+    "micromark-extension-gfm": "catalog:dev",
+    "micromark-extension-math": "catalog:dev",
     "tinyglobby": "catalog:dev",
     "yaml": "catalog:dev"
   }

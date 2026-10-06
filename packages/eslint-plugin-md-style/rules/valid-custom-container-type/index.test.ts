@@ -2,6 +2,7 @@ import type { InvalidTestCase, ValidTestCase } from 'eslint-vitest-rule-tester'
 import markdown from '@eslint/markdown'
 import { run } from 'eslint-vitest-rule-tester'
 import { CUSTOM_CONTAINER_TYPES } from '@/parser/custom-container'
+import { MdStyleMarkdownLanguage } from '@/parser/language'
 import rule, { MESSAGE_IDS, RULE_NAME } from './index'
 
 const valid: ValidTestCase[] = [
@@ -52,7 +53,10 @@ run({
   valid,
   invalid,
   configs: {
-    plugins: { markdown },
-    language: 'markdown/gfm',
+    plugins: {
+      markdown,
+      mdStyle: { languages: { gfm: new MdStyleMarkdownLanguage({ mode: 'gfm' }) } },
+    },
+    language: 'mdStyle/gfm',
   },
 })

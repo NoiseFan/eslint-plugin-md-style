@@ -5,5 +5,4 @@ export type {
   CustomContainerAttr,
   CustomContainerCloseTag,
   CustomContainerOpenTag,
-  CustomContainerOptions,
 } from './types'

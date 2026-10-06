@@ -1,10 +1,14 @@
 import type { Parent, RootContent } from 'mdast'
+import type { Token } from 'micromark-util-types'
 import type { Position } from 'unist'
 
 /**
- * Reserved configuration surface shared by both container extensions.
+ * Internal metadata shared by the micromark tokenizer and mdast compiler.
  */
-export type CustomContainerOptions = Record<never, never>
+export interface CustomContainerToken extends Token {
+  customContainerKind?: 'open' | 'close'
+  customContainerIndent?: number
+}
 
 export interface CustomContainer extends Parent {
   type: 'customContainer'
@@ -16,11 +20,9 @@ export interface CustomContainer extends Parent {
   position?: Position
 }
 
-type CUSTOM_CONTAINER_TYPES = 'info' | 'tip' | 'warning' | 'danger' | 'details' | 'raw' | 'code-group' | 'v-pre' | 'tabs' | string
-
 export interface CustomContainerOpenTag {
   type: {
-    value: CUSTOM_CONTAINER_TYPES
+    value: string
     position?: Position
   }
   label?: CustomContainerAttr

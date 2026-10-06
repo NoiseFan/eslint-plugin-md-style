@@ -1,17 +1,12 @@
 import type { CompileContext, Extension } from 'mdast-util-from-markdown'
 import type { Token } from 'micromark-util-types'
 import type { Point, Position } from 'unist'
-import type { CustomContainer, CustomContainerOptions } from './types'
-
-interface ContainerToken extends Token {
-  _customContainerClosing?: boolean
-  _customContainerIndent?: number
-}
+import type { CustomContainer, CustomContainerToken } from './types'
 
 /**
  * Create the mdast compiler extension matching `customContainer`.
  */
-export function customContainerFromMarkdown(_options: CustomContainerOptions = {}): Extension {
+export function customContainerFromMarkdown(): Extension {
   return {
     enter: { customContainer: enterContainer },
     exit: {
@@ -32,18 +27,18 @@ function enterContainer(this: CompileContext, token: Token): void {
   }, token)
 }
 
-function exitContainer(this: CompileContext, token: ContainerToken): void {
+function exitContainer(this: CompileContext, token: CustomContainerToken): void {
   const node = currentContainer(this)
   this.exit(token)
   node.position = { start: syntaxStart(token), end: publicPoint(token.end) }
 }
 
-function exitFence(this: CompileContext, token: ContainerToken): void {
+function exitFence(this: CompileContext, token: CustomContainerToken): void {
   const node = currentContainer(this)
   const markerLength = this.sliceSerialize(token).match(/:{3,}/)?.[0].length ?? 0
   const position: Position = { start: syntaxStart(token), end: publicPoint(token.end) }
 
-  if (token._customContainerClosing)
+  if (token.customContainerKind === 'close')
     node.tag.close = { markerLength, position }
   else
     Object.assign(node.tag.open, { markerLength, position })
@@ -80,6 +75,7 @@ function exitAttr(this: CompileContext, token: Token): void {
 }
 
 function currentContainer(context: CompileContext): CustomContainer {
+  // Micromark emits custom-container field exits while the container is on top.
   const node = context.stack[context.stack.length - 1]
   if (node.type !== 'customContainer')
     throw new Error('Expected an active custom container')
@@ -90,8 +86,8 @@ function tokenPosition(token: Token): Position {
   return { start: publicPoint(token.start), end: publicPoint(token.end) }
 }
 
-function syntaxStart(token: ContainerToken): Point {
-  const indent = token._customContainerIndent ?? 0
+function syntaxStart(token: CustomContainerToken): Point {
+  const indent = token.customContainerIndent ?? 0
   return {
     line: token.start.line,
     column: token.start.column - indent,

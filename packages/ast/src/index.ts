@@ -4,6 +4,6 @@ export type {
   CustomContainerAttr,
   CustomContainerCloseTag,
   CustomContainerOpenTag,
-  CustomContainerOptions,
 } from './custom-container'
 export { parseMarkdown } from './parse'
+export type { ParseMarkdownOptions } from './parse'

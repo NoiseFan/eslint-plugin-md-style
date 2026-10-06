@@ -1,15 +1,10 @@
 import type { Code, Construct, Effects, Extension, State, Token, TokenizeContext } from 'micromark-util-types'
-import type { CustomContainerOptions } from './types'
+import type { CustomContainerToken } from './types'
 import { markdownLineEnding, markdownSpace } from 'micromark-util-character'
 
 const COLON = 58 // :
 const LEFT_BRACE = 123 // {
 const RIGHT_BRACE = 125 // }
-
-interface ContainerToken extends Token {
-  _customContainerClosing?: boolean
-  _customContainerIndent?: number
-}
 
 declare module 'micromark-util-types' {
   interface TokenTypeMap {
@@ -26,7 +21,7 @@ declare module 'micromark-util-types' {
 /**
  * Create the micromark syntax extension for VitePress-style containers.
  */
-export function customContainer(_options: CustomContainerOptions = {}): Extension {
+export function customContainer(): Extension {
   return {
     flow: {
       [COLON]: { concrete: true, name: 'customContainer', tokenize: tokenizeCustomContainer },
@@ -52,17 +47,17 @@ function tokenizeCustomContainer(
   let contentPrevious: Token | undefined
   const closingFence: Construct = { tokenize: tokenizeClosingFence }
   const attr: Construct = { partial: true, tokenize: tokenizeAttr }
-  const attrSuffix: Construct = { partial: true, tokenize: tokenizeAttrSuffix }
+  const labelAttribute: Construct = { partial: true, tokenize: tokenizeLabelAttribute }
   const nonLazyLine: Construct = { partial: true, tokenize: tokenizeNonLazyLine }
 
   return start
 
   function start(code: Code): State | undefined {
-    const container = effects.enter('customContainer') as ContainerToken
-    const fence = effects.enter('customContainerFence') as ContainerToken
+    const container = effects.enter('customContainer') as CustomContainerToken
+    const fence = effects.enter('customContainerFence') as CustomContainerToken
 
-    container._customContainerIndent = initialIndent
-    fence._customContainerIndent = initialIndent
+    container.customContainerIndent = initialIndent
+    fence.customContainerIndent = initialIndent
     effects.enter('customContainerFenceSequence')
     return openSequence(code)
   }
@@ -76,7 +71,6 @@ function tokenizeCustomContainer(
     if (openMarkerLength < 3 || !markdownSpace(code))
       return nok(code)
     effects.exit('customContainerFenceSequence')
-    // 这为什么要消费 2 次？ 是因为可能有多个空格
     effects.enter('whitespace')
     effects.consume(code)
     return openWhitespace
@@ -92,13 +86,13 @@ function tokenizeCustomContainer(
       return nok(code)
     effects.enter('customContainerType')
     effects.consume(code)
-    return type
+    return openingType
   }
 
-  function type(code: Code): State | undefined {
+  function openingType(code: Code): State | undefined {
     if (isTypeCharacter(code)) {
       effects.consume(code)
-      return type
+      return openingType
     }
     effects.exit('customContainerType')
     if (markdownSpace(code)) {
@@ -124,30 +118,30 @@ function tokenizeCustomContainer(
 
   function labelStart(code: Code): State | undefined {
     effects.enter('customContainerLabel')
-    return label(code)
+    return openingLabel(code)
   }
 
-  function label(code: Code): State | undefined {
+  function openingLabel(code: Code): State | undefined {
     if (code === null || markdownLineEnding(code)) {
       effects.exit('customContainerLabel')
       return finishOpening(code)
     }
     if (markdownSpace(code))
-      return effects.check(attrSuffix, labelBeforeAttr, labelData)(code)
+      return effects.check(labelAttribute, labelBeforeAttr, labelData)(code)
     effects.consume(code)
-    return label
+    return openingLabel
   }
 
   function labelData(code: Code): State | undefined {
     if (code === LEFT_BRACE)
       return nok(code)
     effects.consume(code)
-    return label
+    return openingLabel
   }
 
   function labelBeforeAttr(code: Code): State | undefined {
     effects.exit('customContainerLabel')
-    return effects.attempt(attrSuffix, finishOpening, nok)(code)
+    return effects.attempt(labelAttribute, finishOpening, nok)(code)
   }
 
   function finishOpening(code: Code): State | undefined {
@@ -248,9 +242,9 @@ function tokenizeCustomContainer(
     return closingStart
 
     function closingStart(code: Code): State | undefined {
-      const token = closingEffects.enter('customContainerFence') as ContainerToken
-      token._customContainerClosing = true
-      token._customContainerIndent = 0
+      const token = closingEffects.enter('customContainerFence') as CustomContainerToken
+      token.customContainerKind = 'close'
+      token.customContainerIndent = 0
       return closingIndent(code)
     }
 
@@ -323,13 +317,10 @@ function tokenizeCustomContainer(
   }
 
   function tokenizeAttr(
-    this: TokenizeContext,
     attrEffects: Effects,
     attrOk: State,
     attrNok: State,
   ): State {
-    // eslint-disable-next-line ts/no-this-alias
-    const context = this
     let hasValue = false
     return attrStart
 
@@ -369,20 +360,15 @@ function tokenizeCustomContainer(
         return attrWhitespace
       }
       attrEffects.exit('whitespace')
-      if (code === LEFT_BRACE)
-        return tokenizeAttr.call(context, attrEffects, attrOk, attrNok)(code)
       return code === null || markdownLineEnding(code) ? attrOk(code) : attrNok(code)
     }
   }
 
-  function tokenizeAttrSuffix(
-    this: TokenizeContext,
+  function tokenizeLabelAttribute(
     suffixEffects: Effects,
     suffixOk: State,
     suffixNok: State,
   ): State {
-    // eslint-disable-next-line ts/no-this-alias
-    const context = this
     return beforeAttr
 
     function beforeAttr(code: Code): State | undefined {
@@ -401,7 +387,7 @@ function tokenizeCustomContainer(
       }
       suffixEffects.exit('whitespace')
       return code === LEFT_BRACE
-        ? tokenizeAttr.call(context, suffixEffects, suffixOk, suffixNok)(code)
+        ? tokenizeAttr(suffixEffects, suffixOk, suffixNok)(code)
         : suffixNok(code)
     }
   }

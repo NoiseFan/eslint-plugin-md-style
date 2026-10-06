@@ -36,6 +36,13 @@ describe('customContainer', () => {
     expect(types).toContain('enter:atxHeading')
   })
 
+  it('keeps opening and closing token order stable', () => {
+    const types = tokenTypes('::: warning Label {open}\nbody\n:::')
+    expect(types.indexOf('enter:customContainer')).toBeLessThan(types.indexOf('enter:customContainerFence'))
+    expect(types.indexOf('enter:customContainerType')).toBeLessThan(types.indexOf('enter:customContainerLabel'))
+    expect(types.indexOf('enter:customContainerContent')).toBeLessThan(types.lastIndexOf('enter:customContainerFence'))
+  })
+
   it('emits two container token pairs for adjacent containers', () => {
     const events = tokenEvents('::: info\na\n:::\n::: tip\nb\n:::')
     expect(events.filter(([kind, token]) => kind === 'enter' && token.type === 'customContainer')).toHaveLength(2)
@@ -48,7 +55,6 @@ describe('customContainer', () => {
     '::: info Label',
     '::: info {open}',
     '::: info Label {open}',
-    '::: info {open} {class=wide}',
   ])('accepts valid opening syntax: %j', (source) => {
     expect(tokenTypes(source)).toContain('enter:customContainer')
   })
@@ -60,6 +66,7 @@ describe('customContainer', () => {
     '::: info {open',
     '::: info {}',
     '::: info {open} trailing',
+    '::: info {open} {class=wide}',
   ])('does not tokenize invalid opening syntax: %j', (source) => {
     expect(completeTokenTypes(source)).not.toContain('enter:customContainer')
   })

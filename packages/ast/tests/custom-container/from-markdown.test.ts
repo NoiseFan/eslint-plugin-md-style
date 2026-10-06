@@ -29,6 +29,13 @@ describe('customContainerFromMarkdown', () => {
     })
   })
 
+  it('rejects more than one opening attribute', () => {
+    const root = parseMarkdown('::: info {open} {class=wide}\ncontent\n:::')
+    expect(root.children[0]?.type)
+      .not
+      .toBe('customContainer')
+  })
+
   it('keeps opening fields focused and precisely positioned', () => {
     const container = firstContainer(' ::: details Click me {open}\r\nContent\r\n ::::')
     expect(container.tag.open).toEqual({

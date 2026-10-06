@@ -17,15 +17,16 @@
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@types/mdast": "catalog:types",
-    "@types/unist": "catalog:types",
+  "dependencies": {
     "mdast-util-from-markdown": "catalog:dev",
     "mdast-util-gfm": "catalog:dev",
     "micromark": "catalog:dev",
     "micromark-extension-gfm": "catalog:dev",
-    "micromark-factory-space": "catalog:dev",
     "micromark-util-character": "catalog:dev",
     "micromark-util-types": "catalog:dev"
+  },
+  "devDependencies": {
+    "@types/mdast": "catalog:types",
+    "@types/unist": "catalog:types"
   }
 }

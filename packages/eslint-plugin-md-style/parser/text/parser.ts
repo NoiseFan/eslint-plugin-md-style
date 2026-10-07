@@ -2,6 +2,7 @@ import type { Text } from 'mdast'
 import type { Point, Position } from 'unist'
 import type { TextAst, TextToken, TextType } from '@/types/text'
 
+import { containsCjk, containsLatin, isHorizontalSpace, isLineBreak } from '@/utils/character'
 import { isDashPunctuation, isFullwidthPunctuation, isHalfwidthPunctuation } from '@/utils/punctuation'
 
 export const TEXT_TYPE = {
@@ -19,13 +20,9 @@ export const TEXT_TYPE = {
   'other': 'other',
 } as const
 
-const CJK_RE = /^\p{Script=Han}$|^\p{Script=Hiragana}$|^\p{Script=Katakana}$|^\p{Script=Hangul}$/u
-const LATIN_RE = /^\p{Script=Latin}$/u
 const NUMBER_RE = /^\p{Number}$/u
 const SYMBOL_RE = /^\p{Symbol}$/u
 const EMOJI_RE = /^\p{Extended_Pictographic}$/u
-const SPACE_RE = /^[\t\v\f \u00A0\u1680\u2000-\u200A\u202F\u205F\u3000]$/u
-const NEWLINE_RE = /^[\n\r\u2028\u2029]$/u
 const INVISIBLE_CODE_POINTS = new Set([
   0x00AD,
   0x034F,
@@ -66,11 +63,11 @@ export function isLatinWordType(type: string | undefined): boolean {
 }
 
 const TEXT_TYPE_MATCHERS = [
-  { type: TEXT_TYPE.newline, test: (char: string) => NEWLINE_RE.test(char) },
-  { type: TEXT_TYPE.space, test: (char: string) => SPACE_RE.test(char) },
+  { type: TEXT_TYPE.newline, test: isLineBreak },
+  { type: TEXT_TYPE.space, test: isHorizontalSpace },
   { type: TEXT_TYPE.invisible, test: (char: string) => isInvisible(char) },
-  { type: TEXT_TYPE.cjk, test: (char: string) => CJK_RE.test(char) },
-  { type: TEXT_TYPE.latin, test: (char: string) => LATIN_RE.test(char) },
+  { type: TEXT_TYPE.cjk, test: containsCjk },
+  { type: TEXT_TYPE.latin, test: containsLatin },
   { type: TEXT_TYPE.number, test: isNumber },
   { type: TEXT_TYPE.dash, test: (char: string) => isDashPunctuation(char) },
   { type: TEXT_TYPE['fullwidth-punctuation'], test: (char: string) => isFullwidthPunctuation(char) },
@@ -90,7 +87,7 @@ const DEFAULT_START_POINT = {
 
 function advancePoint(point: Point, char: string): Point {
   const { line, column, offset = 0 } = point
-  if (NEWLINE_RE.test(char)) {
+  if (isLineBreak(char)) {
     return {
       line: line + 1,
       column: 1,

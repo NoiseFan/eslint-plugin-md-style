@@ -124,6 +124,7 @@ export default antfu(
 | `md-style/space-around-custom-container` |  | 🔧 |
 | `md-style/space-around-inline-element` | ✅ | 🔧 |
 | `md-style/space-around-number` |  | 🔧 |
+| `md-style/space-around-quot` |  | 🔧 |
 | `md-style/space-around-word` |  | 🔧 |
 | `md-style/valid-custom-container-type` | ✅ | 🔧 |
 | `md-style/valid-heading-anchor` | ✅ | 🔧 |

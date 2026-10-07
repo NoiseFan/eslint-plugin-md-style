@@ -2,7 +2,8 @@ import type { ValueOf } from '@/types/utils'
 import { getNodeContext, getNodePosition } from '@/parser/ast'
 import { createRule } from '@/utils'
 import { getLikeAnchor } from '@/utils/anchor'
-import { calcAnchorPositionCompensate, hasChinese, isStrictAnchor, normalizeAnchor } from './anchor'
+import { containsHan } from '@/utils/character'
+import { calcAnchorPositionCompensate, isStrictAnchor, normalizeAnchor } from './anchor'
 import { hasFrontmatter } from './frontmatter'
 
 export const RULE_NAME = 'valid-heading-anchor'
@@ -39,7 +40,7 @@ export default createRule<Options, MessageIds>({
 
         const source = context.sourceCode.text.slice(start, end)
 
-        if (isStrictAnchor(source) || !hasChinese(source))
+        if (isStrictAnchor(source) || !containsHan(source))
           return
 
         // ignore frontmatter

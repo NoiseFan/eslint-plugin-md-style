@@ -1,4 +1,5 @@
 import { getLikeAnchor, getLikeAnchorMatch } from '@/utils/anchor'
+
 /**
  * Extract anchor content from `#anchor` or `{#anchor}`.
  */
@@ -13,13 +14,6 @@ export function getAnchor(str: string): string | null {
  */
 export function isStrictAnchor(str: string): boolean {
   return /\s\{#[a-z0-9]+(?:-[a-z0-9]+)*\}/.test(str)
-}
-
-/**
- * Check whether the string contains CJK Han characters.
- */
-export function hasChinese(str: string): boolean {
-  return /\p{Script=Han}/u.test(str)
 }
 
 /**

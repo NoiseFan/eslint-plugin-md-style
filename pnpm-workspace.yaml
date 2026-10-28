@@ -12,16 +12,16 @@ allowBuilds:
 
 catalogs:
   build:
-    tsdown: ^0.23.0
+    tsdown: ^0.23.1
   dev:
-    '@typescript-eslint/utils': ^8.71.0
+    '@typescript-eslint/utils': ^8.71.2
     tinyglobby: ^0.2.17
     typescript: ^6.0.3
     yaml: ^2.9.1
   lint:
     '@antfu/eslint-config': ^9.5.1
     '@eslint/markdown': ^8.0.3
-    eslint: 10.11.0
+    eslint: 10.12.0
     eslint-factory: ^0.1.2
     eslint-plugin-format: ^2.0.1
     eslint-plugin-md-style: ^0.3.1
@@ -33,9 +33,9 @@ catalogs:
     simple-git-hooks: ^2.14.0
     tsx: ^4.23.15
   test:
-    '@vitest/coverage-v8': ^5.0.3
-    vitest: ^5.0.3
+    '@vitest/coverage-v8': ^5.0.4
+    vitest: ^5.0.4
   types:
     '@types/mdast': ^4.0.4
-    '@types/node': ^26.6.3
+    '@types/node': ^26.6.5
     '@types/unist': ^3.0.3

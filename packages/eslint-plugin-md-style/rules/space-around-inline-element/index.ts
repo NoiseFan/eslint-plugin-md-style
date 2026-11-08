@@ -98,7 +98,9 @@ function checkInlineElement(context: RuleContext<MessageIds, Options>, node: Inl
 
   if (BEFORE_INLINE_ELEMENT_MESSAGE_IDS.has(messageId) && spaceContext.prev) {
     const { count } = spaceContext.prev.whiteSpace
-    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceBefore ? '' : ' '
+    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceBefore
+      ? ''
+      : ' '
 
     context.report({
       node,
@@ -112,7 +114,9 @@ function checkInlineElement(context: RuleContext<MessageIds, Options>, node: Inl
 
   if (spaceContext.next) {
     const { count } = spaceContext.next.whiteSpace
-    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceAfter ? '' : ' '
+    const replaceText = messageId === MESSAGE_IDS.unexpectedSpaceAfter
+      ? ''
+      : ' '
 
     context.report({
       node,

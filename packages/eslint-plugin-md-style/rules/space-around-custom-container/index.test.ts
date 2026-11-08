@@ -28,13 +28,17 @@ const invalid: InvalidTestCase[] = [
     description: 'normalizes the opening separator',
     code: ':::  tip Note\nContent\n:::',
     output: '::: tip Note\nContent\n:::',
-    errors: [{ messageId: MESSAGE_IDS.unexpectedSeparator }],
+    errors: [
+      { messageId: MESSAGE_IDS.unexpectedSeparator },
+    ],
   },
   {
     description: 'adds the opening separator',
     code: ':::tip\nContent\n:::',
     output: '::: tip\nContent\n:::',
-    errors: [{ messageId: MESSAGE_IDS.missingSeparator }],
+    errors: [
+      { messageId: MESSAGE_IDS.missingSeparator },
+    ],
   },
 ]
 
@@ -43,5 +47,8 @@ run({
   rule,
   valid,
   invalid,
-  configs: { plugins: { markdown }, language: 'markdown/gfm' },
+  configs: {
+    plugins: { markdown },
+    language: 'markdown/gfm',
+  },
 })

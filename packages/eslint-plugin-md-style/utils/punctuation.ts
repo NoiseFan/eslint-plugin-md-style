@@ -1,7 +1,27 @@
 import type { PositionOptions } from '@/types/text'
 
-export const OPENING_PAIRED_PUNCTUATION = new Set(['(', '[', '{', '<', '（', '【', '《', '“', '‘'])
-export const CLOSING_PAIRED_PUNCTUATION = new Set([')', ']', '}', '>', '）', '】', '》', '”', '’'])
+export const OPENING_PAIRED_PUNCTUATION = new Set([
+  '(',
+  '[',
+  '{',
+  '<',
+  '（',
+  '【',
+  '《',
+  '“',
+  '‘',
+])
+export const CLOSING_PAIRED_PUNCTUATION = new Set([
+  ')',
+  ']',
+  '}',
+  '>',
+  '）',
+  '】',
+  '》',
+  '”',
+  '’',
+])
 
 /**
  * Checks whether the character is a slash used as a path-like separator.

@@ -20,8 +20,18 @@ describe('collectIssues', () => {
     const source = '::: info\ncontent\n:::'
 
     expect(getNodesIssues(parseCustomContainers(source), { mode: 'loose' })).toEqual([
-      { start: 8, end: 9, replacement: '\n\n', messageId: 'missing' },
-      { start: 16, end: 17, replacement: '\n\n', messageId: 'missing' },
+      {
+        start: 8,
+        end: 9,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
+      {
+        start: 16,
+        end: 17,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
     ])
   })
 
@@ -29,8 +39,18 @@ describe('collectIssues', () => {
     const source = 'Before\n::: info\ncontent\n:::\nAfter'
 
     expect(getNodesIssues(parseCustomContainers(source), { mode: 'compact' })).toEqual([
-      { start: 6, end: 7, replacement: '\n\n', messageId: 'missing' },
-      { start: 27, end: 28, replacement: '\n\n', messageId: 'missing' },
+      {
+        start: 6,
+        end: 7,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
+      {
+        start: 27,
+        end: 28,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
     ])
   })
 
@@ -38,7 +58,12 @@ describe('collectIssues', () => {
     const source = '::: info\ncontent\n:::\n::: tip\ncontent\n:::'
 
     expect(getNodesIssues(parseCustomContainers(source), { mode: 'compact' })).toEqual([
-      { start: 20, end: 21, replacement: '\n\n', messageId: 'missing' },
+      {
+        start: 20,
+        end: 21,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
     ])
   })
 
@@ -46,15 +71,30 @@ describe('collectIssues', () => {
     const source = '::: info\nOuter\n\n::: tip\n\nInner\n\n:::\n\nOuter\n:::'
 
     expect(getNodesIssues(parseCustomContainers(source), { mode: 'compact' })).toEqual([
-      { start: 23, end: 25, replacement: '\n', messageId: 'unexpected' },
-      { start: 30, end: 32, replacement: '\n', messageId: 'unexpected' },
+      {
+        start: 23,
+        end: 25,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
+      {
+        start: 30,
+        end: 32,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
     ])
   })
 
   it('preserves the required line break inside an empty container', () => {
     expect(getNodesIssues(parseCustomContainers('::: info\n:::'), { mode: 'compact' })).toEqual([])
     expect(getNodesIssues(parseCustomContainers('::: info\n\n:::'), { mode: 'compact' })).toEqual([
-      { start: 8, end: 10, replacement: '\n', messageId: 'unexpected' },
+      {
+        start: 8,
+        end: 10,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
     ])
   })
 
@@ -62,9 +102,24 @@ describe('collectIssues', () => {
     const source = 'Before\r\n::: info\r\n\r\ncontent\r\n:::\r\nAfter'
 
     expect(getNodesIssues(parseCustomContainers(source), { mode: 'compact' })).toEqual([
-      { start: 16, end: 20, replacement: '\r\n', messageId: 'unexpected' },
-      { start: 6, end: 8, replacement: '\r\n\r\n', messageId: 'missing' },
-      { start: 32, end: 34, replacement: '\r\n\r\n', messageId: 'missing' },
+      {
+        start: 16,
+        end: 20,
+        replacement: '\r\n',
+        messageId: 'unexpected',
+      },
+      {
+        start: 6,
+        end: 8,
+        replacement: '\r\n\r\n',
+        messageId: 'missing',
+      },
+      {
+        start: 32,
+        end: 34,
+        replacement: '\r\n\r\n',
+        messageId: 'missing',
+      },
     ])
   })
 
@@ -77,8 +132,18 @@ describe('collectIssues', () => {
     const source = '::: info\n\ncontent\n\n:::'
 
     expect(getNodesIssues(parseCustomContainers(source), { offset: 4, mode: 'compact' })).toEqual([
-      { start: 12, end: 14, replacement: '\n', messageId: 'unexpected' },
-      { start: 21, end: 23, replacement: '\n', messageId: 'unexpected' },
+      {
+        start: 12,
+        end: 14,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
+      {
+        start: 21,
+        end: 23,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
     ])
   })
 })
@@ -86,28 +151,94 @@ describe('collectIssues', () => {
 describe('analyzs helpers', () => {
   describe('checkInnerSide', () => {
     it('inserts loose-mode padding on either side of direct content', () => {
-      const node = { type: 'text' as const, value: 'content', position: { start: 2, end: 9 } }
+      const node = {
+        type: 'text' as const,
+        value: 'content',
+        position: { start: 2, end: 9 },
+      }
       const issues: Issues = []
 
-      checkInnerSide(node, { direction: 1, children: [node], offset: 10, issues, mode: 'loose' })
-      checkInnerSide(node, { direction: -1, children: [node], offset: 10, issues, mode: 'loose' })
+      checkInnerSide(node, {
+        direction: 1,
+        children: [node],
+        offset: 10,
+        issues,
+        mode: 'loose',
+      })
+      checkInnerSide(node, {
+        direction: -1,
+        children: [node],
+        offset: 10,
+        issues,
+        mode: 'loose',
+      })
 
       expect(issues).toEqual([
-        { start: 12, end: 12, replacement: '\n\n', messageId: 'missing' },
-        { start: 19, end: 19, replacement: '\n\n', messageId: 'missing' },
+        {
+          start: 12,
+          end: 12,
+          replacement: '\n\n',
+          messageId: 'missing',
+        },
+        {
+          start: 19,
+          end: 19,
+          replacement: '\n\n',
+          messageId: 'missing',
+        },
       ])
     })
 
     it('skips compact-mode content and container boundary nodes', () => {
-      const text = { type: 'text' as const, value: 'content', position: { start: 2, end: 9 } }
-      const open = { type: 'open' as const, markerLength: 3, raw: '::: info', value: { content: 'info', start: 0, end: 8 }, position: { start: 0, end: 8 } }
-      const close = { type: 'close' as const, markerLength: 3, raw: ':::', value: { content: '', start: 10, end: 13 }, position: { start: 10, end: 13 } }
+      const text = {
+        type: 'text' as const,
+        value: 'content',
+        position: { start: 2, end: 9 },
+      }
+      const open = {
+        type: 'open' as const,
+        markerLength: 3,
+        raw: '::: info',
+        value: { content: 'info', start: 0, end: 8 },
+        position: { start: 0, end: 8 },
+      }
+      const close = {
+        type: 'close' as const,
+        markerLength: 3,
+        raw: ':::',
+        value: { content: '', start: 10, end: 13 },
+        position: { start: 10, end: 13 },
+      }
       const issues: Issues = []
 
-      checkInnerSide(text, { direction: 1, children: [text], offset: 0, issues, mode: 'compact' })
-      checkInnerSide(open, { direction: 1, children: [open, text, close], offset: 0, issues, mode: 'loose' })
-      checkInnerSide(close, { direction: -1, children: [open, text, close], offset: 0, issues, mode: 'loose' })
-      checkInnerSide(undefined, { direction: 1, children: [text], offset: 0, issues, mode: 'loose' })
+      checkInnerSide(text, {
+        direction: 1,
+        children: [text],
+        offset: 0,
+        issues,
+        mode: 'compact',
+      })
+      checkInnerSide(open, {
+        direction: 1,
+        children: [open, text, close],
+        offset: 0,
+        issues,
+        mode: 'loose',
+      })
+      checkInnerSide(close, {
+        direction: -1,
+        children: [open, text, close],
+        offset: 0,
+        issues,
+        mode: 'loose',
+      })
+      checkInnerSide(undefined, {
+        direction: 1,
+        children: [text],
+        offset: 0,
+        issues,
+        mode: 'loose',
+      })
 
       expect(issues).toEqual([])
     })
@@ -123,10 +254,25 @@ describe('analyzs helpers', () => {
     const issues: Issues = []
     const opts = { offset: 10, issues }
 
-    addInnerIssues({ type: 'blank', value: '\n\n', position: { start: 4, end: 6 } }, opts)
-    addInnerIssues({ type: 'blank', value: '\n', position: { start: 8, end: 9 } }, opts)
+    addInnerIssues({
+      type: 'blank',
+      value: '\n\n',
+      position: { start: 4, end: 6 },
+    }, opts)
+    addInnerIssues({
+      type: 'blank',
+      value: '\n',
+      position: { start: 8, end: 9 },
+    }, opts)
 
-    expect(issues).toEqual([{ start: 14, end: 16, replacement: '\n', messageId: 'unexpected' }])
+    expect(issues).toEqual([
+      {
+        start: 14,
+        end: 16,
+        replacement: '\n',
+        messageId: 'unexpected',
+      },
+    ])
   })
 
   it('inserts loose-mode padding around direct content boundaries', () => {
@@ -141,8 +287,18 @@ describe('analyzs helpers', () => {
     })
 
     expect(issues).toEqual([
-      { start: 19, end: 19, replacement: '\n\n', messageId: 'missing' },
-      { start: 31, end: 31, replacement: '\n\n', messageId: 'missing' },
+      {
+        start: 19,
+        end: 19,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
+      {
+        start: 31,
+        end: 31,
+        replacement: '\n\n',
+        messageId: 'missing',
+      },
     ])
   })
 
@@ -162,10 +318,24 @@ describe('analyzs helpers', () => {
     })
 
     it('getLineBreakFromChildren', () => {
-      expect(getLineBreakFromChildren([{ type: 'text', value: 'x', position: { start: 0, end: 1 } }])).toBe('\n')
       expect(getLineBreakFromChildren([
-        { type: 'text', value: 'x', position: { start: 0, end: 1 } },
-        { type: 'blank', value: '\r\n', position: { start: 1, end: 3 } },
+        {
+          type: 'text',
+          value: 'x',
+          position: { start: 0, end: 1 },
+        },
+      ])).toBe('\n')
+      expect(getLineBreakFromChildren([
+        {
+          type: 'text',
+          value: 'x',
+          position: { start: 0, end: 1 },
+        },
+        {
+          type: 'blank',
+          value: '\r\n',
+          position: { start: 1, end: 3 },
+        },
       ])).toBe('\r\n')
     })
   })
@@ -177,20 +347,40 @@ describe('analyzs helpers', () => {
 
     it('check parent outer side', () => {
       const issues: Issues = []
-      checkOuterSide(children, { boundaryIndex: 0, direction: -1, offset: 0, issues })
+      checkOuterSide(children, {
+        boundaryIndex: 0,
+        direction: -1,
+        offset: 0,
+        issues,
+      })
       expect(issues).toEqual([])
     })
 
     it('check children outer side', () => {
       const compactChildren = children.filter(node => node.type !== 'blank')
       const missing: Issues = []
-      checkOuterSide(compactChildren, { boundaryIndex: 0, direction: 1, offset: 5, issues: missing })
-      checkOuterSide(compactChildren, { boundaryIndex: 2, direction: -1, offset: 5, issues: missing })
+      checkOuterSide(compactChildren, {
+        boundaryIndex: 0,
+        direction: 1,
+        offset: 5,
+        issues: missing,
+      })
+      checkOuterSide(compactChildren, {
+        boundaryIndex: 2,
+        direction: -1,
+        offset: 5,
+        issues: missing,
+      })
       expect(missing).toHaveLength(2)
     })
 
     it('dedupeIssues', () => {
-      const duplicate = { start: 1, end: 1, replacement: '\n', messageId: 'missing' as const }
+      const duplicate = {
+        start: 1,
+        end: 1,
+        replacement: '\n',
+        messageId: 'missing' as const,
+      }
       expect(dedupeIssues([duplicate, duplicate])).toEqual([duplicate])
     })
   })

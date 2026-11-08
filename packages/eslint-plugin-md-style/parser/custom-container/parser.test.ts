@@ -97,26 +97,66 @@ describe('parseCustomContainers', () => {
 
   it('preserves consecutive line breaks as one blank node with its full offset', () => {
     expect(parseCustomContainers('first\n\nsecond')).toMatchObject([
-      { type: 'text', value: 'first', position: { start: 0, end: 5 } },
-      { type: 'blank', value: '\n\n', position: { start: 5, end: 7 } },
-      { type: 'text', value: 'second', position: { start: 7, end: 13 } },
+      {
+        type: 'text',
+        value: 'first',
+        position: { start: 0, end: 5 },
+      },
+      {
+        type: 'blank',
+        value: '\n\n',
+        position: { start: 5, end: 7 },
+      },
+      {
+        type: 'text',
+        value: 'second',
+        position: { start: 7, end: 13 },
+      },
     ])
   })
 
   it('preserves a trailing line break and its source offset', () => {
     expect(parseCustomContainers('first\n')).toMatchObject([
-      { type: 'text', value: 'first', position: { start: 0, end: 5 } },
-      { type: 'blank', value: '\n', position: { start: 5, end: 6 } },
+      {
+        type: 'text',
+        value: 'first',
+        position: { start: 0, end: 5 },
+      },
+      {
+        type: 'blank',
+        value: '\n',
+        position: { start: 5, end: 6 },
+      },
     ])
   })
 
   it('preserves mixed LF and CRLF line breaks', () => {
     expect(parseCustomContainers('first\r\nsecond\nthird')).toMatchObject([
-      { type: 'text', value: 'first', position: { start: 0, end: 5 } },
-      { type: 'blank', value: '\r\n', position: { start: 5, end: 7 } },
-      { type: 'text', value: 'second', position: { start: 7, end: 13 } },
-      { type: 'blank', value: '\n', position: { start: 13, end: 14 } },
-      { type: 'text', value: 'third', position: { start: 14, end: 19 } },
+      {
+        type: 'text',
+        value: 'first',
+        position: { start: 0, end: 5 },
+      },
+      {
+        type: 'blank',
+        value: '\r\n',
+        position: { start: 5, end: 7 },
+      },
+      {
+        type: 'text',
+        value: 'second',
+        position: { start: 7, end: 13 },
+      },
+      {
+        type: 'blank',
+        value: '\n',
+        position: { start: 13, end: 14 },
+      },
+      {
+        type: 'text',
+        value: 'third',
+        position: { start: 14, end: 19 },
+      },
     ])
   })
 
@@ -138,7 +178,13 @@ describe('splitLines', () => {
 
   it('preserves CRLF and does not add a trailing empty item', () => {
     expect(splitLines('first\r\n')).toStrictEqual(['first', '\r\n'])
-    expect(splitLines('\r\nfirst\r\nsecond\r\n')).toStrictEqual(['\r\n', 'first', '\r\n', 'second', '\r\n'])
+    expect(splitLines('\r\nfirst\r\nsecond\r\n')).toStrictEqual([
+      '\r\n',
+      'first',
+      '\r\n',
+      'second',
+      '\r\n',
+    ])
   })
 
   it('returns an empty array for an empty string', () => {
@@ -224,11 +270,19 @@ describe('parseBlankNode', () => {
     const node = parseBlankNode()
     parseBlankNode({ prevNode: node! })
 
-    expect(node).toStrictEqual({ type: 'blank', value: '\n\n', position: { start: 0, end: 2 } })
+    expect(node).toStrictEqual({
+      type: 'blank',
+      value: '\n\n',
+      position: { start: 0, end: 2 },
+    })
   })
 
   it('preserves CRLF line endings and offsets', () => {
     const node = parseBlankNode({ newline: '\r\n' })
-    expect(node).toStrictEqual({ type: 'blank', value: '\r\n', position: { start: 0, end: 2 } })
+    expect(node).toStrictEqual({
+      type: 'blank',
+      value: '\r\n',
+      position: { start: 0, end: 2 },
+    })
   })
 })

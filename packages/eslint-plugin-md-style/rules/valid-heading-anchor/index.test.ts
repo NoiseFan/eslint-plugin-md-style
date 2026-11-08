@@ -30,53 +30,71 @@ const invalid: InvalidTestCase[] = [
   {
     description: 'chinese heading should require an anchor',
     code: '# 中文标题',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
   {
     description: 'chinese with english should require an anchor',
     code: '# 你的第一个测试 Your First Test',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
   {
     description: 'english with chinese should require an anchor',
     code: '## API 介绍 API Introduction',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
   {
     description: 'generated anchor should replace dots with dashes',
     code: '# Vitest 3.2 发布了！ # Vitest 3.2 is out!',
     output: '# Vitest 3.2 发布了！ {#vitest-3-2-is-out}',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
   {
     description: 'like heading anchor',
     code: '## 使用 `describe` 编组测试 #Grouping Tests with `describe`',
     output: '## 使用 `describe` 编组测试 {#grouping-tests-with-describe}',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
   {
     description: 'normalized loose anchor should be wrapped in braces',
     code: '### `vitest`（默认）#vitest-default',
     output: '### `vitest`（默认） {#vitest-default}',
-    errors: [{ messageId: 'invalidHeadingAnchor' }],
+    errors: [
+      { messageId: 'invalidHeadingAnchor' },
+    ],
   },
   {
     description: 'should be no capital letters',
     code: '# 中文标题 {#Chinese-Title}',
     output: '# 中文标题 {#chinese-title}',
-    errors: [{ messageId: 'invalidHeadingAnchor' }],
+    errors: [
+      { messageId: 'invalidHeadingAnchor' },
+    ],
   },
   {
     description: 'should be allow underline',
     code: '# 中文标题 {#Foo_Bar`123}',
     output: '# 中文标题 {#foo_bar123}',
-    errors: [{ messageId: 'invalidHeadingAnchor' }],
+    errors: [
+      { messageId: 'invalidHeadingAnchor' },
+    ],
   },
   {
     description: 'should collapse multiple spaces in anchor fix',
     code: '# 中文标题 {#Chinese   Title}',
     output: '# 中文标题 {#chinese-title}',
-    errors: [{ messageId: 'missingAnchor' }],
+    errors: [
+      { messageId: 'missingAnchor' },
+    ],
   },
 ]
 

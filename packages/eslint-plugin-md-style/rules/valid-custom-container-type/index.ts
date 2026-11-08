@@ -42,7 +42,9 @@ export default createRule<Options, MessageIds>({
           if (!issue)
             continue
 
-          const normalizedType = 'normalizedType' in issue ? issue.normalizedType : undefined
+          const normalizedType = 'normalizedType' in issue
+            ? issue.normalizedType
+            : undefined
 
           const start = startPoint + tag.value.start
           const end = startPoint + tag.value.end

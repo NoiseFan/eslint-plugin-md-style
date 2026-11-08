@@ -82,19 +82,25 @@ export function checkInnerSide(
   const { direction, children, offset } = opts
   if (isBlankNode(node)) {
     const lineBreak = getLineBreak(node.value)
-    const expected = opts.mode === 'loose' ? `${lineBreak}${lineBreak}` : lineBreak
+    const expected = opts.mode === 'loose'
+      ? `${lineBreak}${lineBreak}`
+      : lineBreak
     if (node.value !== expected) {
       opts.issues.push({
         start: offset + node.position.start,
         end: offset + node.position.end,
         replacement: expected,
-        messageId: node.value.length < expected.length ? MESSAGE_IDS.missing : MESSAGE_IDS.unexpected,
+        messageId: node.value.length < expected.length
+          ? MESSAGE_IDS.missing
+          : MESSAGE_IDS.unexpected,
       })
     }
     return
   }
   if (opts.mode === 'loose' && node && !isOpenNode(node) && !isCloseNode(node)) {
-    const insertion = direction === 1 ? node.position.start : node.position.end
+    const insertion = direction === 1
+      ? node.position.start
+      : node.position.end
     opts.issues.push({
       start: offset + insertion,
       end: offset + insertion,
@@ -163,7 +169,9 @@ export function checkOuterSide(
 
   const blankIndex = boundaryIndex + direction
   const blank = children[blankIndex]
-  const contentIndex = isBlankNode(blank) ? blankIndex + direction : blankIndex
+  const contentIndex = isBlankNode(blank)
+    ? blankIndex + direction
+    : blankIndex
   const content = children[contentIndex]
 
   if (!isExternalContent(content, { index: contentIndex, length: children.length }))
@@ -191,7 +199,9 @@ export function checkOuterSide(
     start: offset + blank.position.start,
     end: offset + blank.position.end,
     replacement: expected,
-    messageId: blank.value.length < expected.length ? MESSAGE_IDS.missing : MESSAGE_IDS.unexpected,
+    messageId: blank.value.length < expected.length
+      ? MESSAGE_IDS.missing
+      : MESSAGE_IDS.unexpected,
   })
 }
 
@@ -230,7 +240,9 @@ export function dedupeIssues(issues: Issues): Issues {
  * Returns the line-break sequence used by a string.
  */
 export function getLineBreak(value: string): string {
-  return value.includes('\r\n') ? '\r\n' : '\n'
+  return value.includes('\r\n')
+    ? '\r\n'
+    : '\n'
 }
 
 /**
@@ -238,5 +250,7 @@ export function getLineBreak(value: string): string {
  */
 export function getLineBreakFromChildren(children: ChildrenNode[]): string {
   const blank = children.find(child => isBlankNode(child))
-  return isBlankNode(blank) ? getLineBreak(blank.value) : '\n'
+  return isBlankNode(blank)
+    ? getLineBreak(blank.value)
+    : '\n'
 }

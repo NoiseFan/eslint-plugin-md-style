@@ -127,8 +127,14 @@ export function getNodeContext(
 
   const currentIndex = parent.children.findIndex(child => child === node)
 
-  if (currentIndex === -1)
-    return { parent, prev: undefined, next: undefined, current: node }
+  if (currentIndex === -1) {
+    return {
+      parent,
+      prev: undefined,
+      next: undefined,
+      current: node,
+    }
+  }
 
   return {
     parent,
@@ -171,5 +177,7 @@ export function getAdjacentChar(
     return undefined
 
   str = str.trim()
-  return position === 'head' ? str[0] : str[str.length - 1]
+  return position === 'head'
+    ? str[0]
+    : str[str.length - 1]
 }

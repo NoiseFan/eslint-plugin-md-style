@@ -20,7 +20,10 @@ function runWithConfig(name: string, configs: Linter.Config) {
     const target = resolve(packageRoot, 'tests/_fixtures')
 
     await fs.rm(target, { recursive: true, force: true })
-    await fs.cp(from, target, { recursive: true, filter: src => !src.includes('node_modules') })
+    await fs.cp(from, target, {
+      recursive: true,
+      filter: src => !src.includes('node_modules'),
+    })
 
     const inputFiles = await glob('**/*.md', { cwd: from, onlyFiles: true })
     const fileOverrides = await getFixtureRuleOverrides(inputFiles, from)
@@ -29,12 +32,15 @@ function runWithConfig(name: string, configs: Linter.Config) {
       cwd: target,
       fix: true,
       overrideConfigFile: true,
-      overrideConfig: [configs, ...fileOverrides.map(({ file, override }) => ({
-        files: [file],
-        rules: {
-          [`md-style/${override.rule}`]: ['error', ...override.options] as Linter.RuleEntry,
-        },
-      }))],
+      overrideConfig: [
+        configs,
+        ...fileOverrides.map(({ file, override }) => ({
+          files: [file],
+          rules: {
+            [`md-style/${override.rule}`]: ['error', ...override.options] as Linter.RuleEntry,
+          },
+        })),
+      ],
     })
     const results = await eslint.lintFiles(['**/*.md'])
     await ESLint.outputFixes(results)

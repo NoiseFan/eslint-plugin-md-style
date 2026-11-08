@@ -58,7 +58,11 @@ describe('getNodeContext', () => {
     const paragraph = findNode(ast, isParagraphNode)
 
     expect(paragraph).toBeDefined()
-    expect(getNodeContext({ sourceCode: { getAncestors: () => [] } }, paragraph!)).toStrictEqual({
+    expect(getNodeContext({
+      sourceCode: {
+        getAncestors: () => [],
+      },
+    }, paragraph!)).toStrictEqual({
       prev: undefined,
       next: undefined,
       current: paragraph,
@@ -71,7 +75,11 @@ describe('getNodeContext', () => {
     const parent = { type: 'root', children: [] }
 
     expect(paragraph).toBeDefined()
-    expect(getNodeContext({ sourceCode: { getAncestors: () => [parent] } }, paragraph!)).toStrictEqual({
+    expect(getNodeContext({
+      sourceCode: {
+        getAncestors: () => [parent],
+      },
+    }, paragraph!)).toStrictEqual({
       parent,
       prev: undefined,
       next: undefined,

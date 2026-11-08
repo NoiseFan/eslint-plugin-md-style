@@ -26,5 +26,8 @@ export function getLikeAnchor(str: string | undefined): { isLikeAnchor: boolean,
 
   // clear `{`, `}`, `#`
   const rawLikeAnchor = match.replace(/[{}]/g, '').replace(/^#/, '').trimStart()
-  return { isLikeAnchor: rawLikeAnchor.includes(' '), rawLikeAnchor }
+  return {
+    isLikeAnchor: rawLikeAnchor.includes(' '),
+    rawLikeAnchor,
+  }
 }

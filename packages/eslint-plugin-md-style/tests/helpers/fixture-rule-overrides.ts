@@ -21,7 +21,9 @@ export async function getFixtureRuleOverrides(
   for (const file of files) {
     const source = await fs.readFile(join(inputRoot, file), 'utf-8')
     const directory = dirname(file)
-    const defaultRule = directory === '.' ? undefined : basename(directory)
+    const defaultRule = directory === '.'
+      ? undefined
+      : basename(directory)
     const override = parseFixtureRuleOverride(source, defaultRule)
     if (override)
       overrides.push({ file, override })
@@ -43,6 +45,8 @@ export function parseFixtureRuleOverride(source: string, defaultRule?: string): 
     : undefined
   if (!rule && !defaultRule)
     return
-  const options = Array.isArray(metadata.options) ? metadata.options : []
+  const options = Array.isArray(metadata.options)
+    ? metadata.options
+    : []
   return { rule: rule ?? defaultRule!, options }
 }

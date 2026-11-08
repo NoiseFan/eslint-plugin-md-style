@@ -17,17 +17,31 @@ describe('getCustomContainerMarkerIssues', () => {
 
   it('normalizes indentation and opening separators', () => {
     expect(getSourceIssues('  :::  tip Note\nContent\n  :::  ')).toEqual([
-      { start: 0, end: 15, replacement: '::: tip Note', messageId: MESSAGE_IDS.unexpectedIndentation },
-      { start: 24, end: 31, replacement: ':::', messageId: MESSAGE_IDS.unexpectedIndentation },
+      {
+        start: 0,
+        end: 15,
+        replacement: '::: tip Note',
+        messageId: MESSAGE_IDS.unexpectedIndentation,
+      },
+      {
+        start: 24,
+        end: 31,
+        replacement: ':::',
+        messageId: MESSAGE_IDS.unexpectedIndentation,
+      },
     ])
   })
 
   it('requires a separator after the opening fence', () => {
-    expect(getSourceIssues(':::tip\nContent\n:::')).toMatchObject([{ replacement: '::: tip' }])
+    expect(getSourceIssues(':::tip\nContent\n:::')).toMatchObject([
+      { replacement: '::: tip' },
+    ])
   })
 
   it('ignores markers inside ignored ranges', () => {
-    expect(getSourceIssues('```md\n  ::: tip\n```', [{ start: 0, end: 21 }])).toEqual([])
+    expect(getSourceIssues('```md\n  ::: tip\n```', [
+      { start: 0, end: 21 },
+    ])).toEqual([])
   })
 
   it('collects marker issues from nested parsed containers', () => {

@@ -116,7 +116,13 @@ export function validateSpaceAfterNode(context: AdjacentTextContext): InlineElem
   )
 }
 
-const INLINE_ELEMENT_TYPES = new Set(['link', 'image', 'inlineCode', 'emphasis', 'strong'])
+const INLINE_ELEMENT_TYPES = new Set([
+  'link',
+  'image',
+  'inlineCode',
+  'emphasis',
+  'strong',
+])
 
 /**
  * Checks whether a phrasing node is one of the selected inline element targets.
@@ -137,13 +143,17 @@ export function getSpaceContext(
       value: prevValue,
       whiteSpace: getWhiteSpace(prevValue, 'tail'),
       hasPunctuation: hasPunctuation(prevValue, 'tail'),
-      punctuationType: isFullwidthPunctuation(getAdjacentChar(prevValue, 'tail')) ? 'full' : 'half',
+      punctuationType: isFullwidthPunctuation(getAdjacentChar(prevValue, 'tail'))
+        ? 'full'
+        : 'half',
     },
     next: {
       value: nextValue,
       whiteSpace: getWhiteSpace(nextValue),
       hasPunctuation: hasPunctuation(nextValue),
-      punctuationType: isFullwidthPunctuation(getAdjacentChar(nextValue, 'head')) ? 'full' : 'half',
+      punctuationType: isFullwidthPunctuation(getAdjacentChar(nextValue, 'head'))
+        ? 'full'
+        : 'half',
     },
   }
 }

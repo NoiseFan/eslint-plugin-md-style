@@ -31,37 +31,49 @@ const invalid: InvalidTestCase[] = [
     description: 'reports a missing space before an English word after CJK text',
     code: '在watch 模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.missingSpaceBefore }],
+    errors: [
+      { messageId: MESSAGE_IDS.missingSpaceBefore },
+    ],
   },
   {
     description: 'reports a missing space after an English word before CJK text',
     code: '在 watch模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.missingSpaceAfter }],
+    errors: [
+      { messageId: MESSAGE_IDS.missingSpaceAfter },
+    ],
   },
   {
     description: 'reports missing spaces on both sides of an embedded English word',
     code: '在watch模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.missingSpacesAround }],
+    errors: [
+      { messageId: MESSAGE_IDS.missingSpacesAround },
+    ],
   },
   {
     description: 'reports an unexpected space before an English word after CJK text',
     code: '在  watch 模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.unexpectedSpaceBefore }],
+    errors: [
+      { messageId: MESSAGE_IDS.unexpectedSpaceBefore },
+    ],
   },
   {
     description: 'collapses multiple spaces between English and CJK text',
     code: '在 watch  模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.unexpectedSpaceAfter }],
+    errors: [
+      { messageId: MESSAGE_IDS.unexpectedSpaceAfter },
+    ],
   },
   {
     description: 'collapses multiple spaces between English and CJK text',
     code: '在  watch   模式下',
     output: '在 watch 模式下',
-    errors: [{ messageId: MESSAGE_IDS.unexpectedSpaceAround }],
+    errors: [
+      { messageId: MESSAGE_IDS.unexpectedSpaceAround },
+    ],
   },
 ]
 

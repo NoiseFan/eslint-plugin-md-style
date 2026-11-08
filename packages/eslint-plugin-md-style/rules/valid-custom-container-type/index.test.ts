@@ -23,26 +23,46 @@ const invalid: InvalidTestCase[] = [
   {
     description: 'reports an unsupported container type',
     code: '::: note\ncontent\n:::',
-    errors: [{ messageId: MESSAGE_IDS.invalidType, data: { type: 'note' } }],
+    errors: [
+      {
+        messageId: MESSAGE_IDS.invalidType,
+        data: { type: 'note' },
+      },
+    ],
   },
   {
     description: 'normalizes the casing of a supported type',
     code: '::: WARNING Custom title\ncontent\n:::',
     output: '::: warning Custom title\ncontent\n:::',
-    errors: [{ messageId: MESSAGE_IDS.invalidTypeCase, data: { type: 'WARNING' } }],
+    errors: [
+      {
+        messageId: MESSAGE_IDS.invalidTypeCase,
+        data: { type: 'WARNING' },
+      },
+    ],
   },
   {
     description: 'normalizes an invalid nested container type',
     code: ':::: info\n::: TIP\ncontent\n:::\n::::',
     output: ':::: info\n::: tip\ncontent\n:::\n::::',
-    errors: [{ messageId: MESSAGE_IDS.invalidTypeCase, data: { type: 'TIP' } }],
+    errors: [
+      {
+        messageId: MESSAGE_IDS.invalidTypeCase,
+        data: { type: 'TIP' },
+      },
+    ],
   },
   // uppercase to lowercase
   {
     description: 'normalizes an uppercase type',
     code: '::: INFO \n content\n:::',
     output: '::: info \n content\n:::',
-    errors: [{ messageId: MESSAGE_IDS.invalidTypeCase, data: { type: 'INFO' } }],
+    errors: [
+      {
+        messageId: MESSAGE_IDS.invalidTypeCase,
+        data: { type: 'INFO' },
+      },
+    ],
   },
 ]
 

@@ -66,17 +66,47 @@ export function isLatinWordType(type: string | undefined): boolean {
 }
 
 const TEXT_TYPE_MATCHERS = [
-  { type: TEXT_TYPE.newline, test: (char: string) => NEWLINE_RE.test(char) },
-  { type: TEXT_TYPE.space, test: (char: string) => SPACE_RE.test(char) },
-  { type: TEXT_TYPE.invisible, test: (char: string) => isInvisible(char) },
-  { type: TEXT_TYPE.cjk, test: (char: string) => CJK_RE.test(char) },
-  { type: TEXT_TYPE.latin, test: (char: string) => LATIN_RE.test(char) },
+  {
+    type: TEXT_TYPE.newline,
+    test: (char: string) => NEWLINE_RE.test(char),
+  },
+  {
+    type: TEXT_TYPE.space,
+    test: (char: string) => SPACE_RE.test(char),
+  },
+  {
+    type: TEXT_TYPE.invisible,
+    test: (char: string) => isInvisible(char),
+  },
+  {
+    type: TEXT_TYPE.cjk,
+    test: (char: string) => CJK_RE.test(char),
+  },
+  {
+    type: TEXT_TYPE.latin,
+    test: (char: string) => LATIN_RE.test(char),
+  },
   { type: TEXT_TYPE.number, test: isNumber },
-  { type: TEXT_TYPE.dash, test: (char: string) => isDashPunctuation(char) },
-  { type: TEXT_TYPE['fullwidth-punctuation'], test: (char: string) => isFullwidthPunctuation(char) },
-  { type: TEXT_TYPE['halfwidth-punctuation'], test: (char: string) => isHalfwidthPunctuation(char) },
-  { type: TEXT_TYPE.emoji, test: (char: string) => EMOJI_RE.test(char) },
-  { type: TEXT_TYPE.symbol, test: (char: string) => SYMBOL_RE.test(char) },
+  {
+    type: TEXT_TYPE.dash,
+    test: (char: string) => isDashPunctuation(char),
+  },
+  {
+    type: TEXT_TYPE['fullwidth-punctuation'],
+    test: (char: string) => isFullwidthPunctuation(char),
+  },
+  {
+    type: TEXT_TYPE['halfwidth-punctuation'],
+    test: (char: string) => isHalfwidthPunctuation(char),
+  },
+  {
+    type: TEXT_TYPE.emoji,
+    test: (char: string) => EMOJI_RE.test(char),
+  },
+  {
+    type: TEXT_TYPE.symbol,
+    test: (char: string) => SYMBOL_RE.test(char),
+  },
 ] as const satisfies readonly {
   type: TextType
   test: (char: string, prev: TextToken | undefined) => boolean

@@ -20,7 +20,10 @@ interface ParseState { splits: string[], offset: number }
  * Parses top-level text into container, blank-line, and text nodes.
  */
 export function parseCustomContainers(value: string): CustomContainerBlockNode[] {
-  const state: ParseState = { splits: splitLines(value), offset: 0 }
+  const state: ParseState = {
+    splits: splitLines(value),
+    offset: 0,
+  }
   const nodes: CustomContainerBlockNode[] = []
 
   while (state.splits.length) {
@@ -104,7 +107,10 @@ function consume(state: ParseState): { value: string, position: OffsetRange } {
   const value = state.splits.shift()!
   const start = state.offset
   state.offset += value.length
-  return { value, position: { start, end: state.offset } }
+  return {
+    value,
+    position: { start, end: state.offset },
+  }
 }
 
 /**
@@ -138,7 +144,10 @@ export function parseOpenTag(raw: string, prevNode?: ChildrenNode | CustomContai
   // parse attrs
   const attributeMatch = titleAndAttrsValue.match(CUSTOM_CONTAINER_ATTRS_RE)
   const attrs = attributeMatch
-    ? { content: attributeMatch[1].slice(1, -1), raw: attributeMatch[1] }
+    ? {
+        content: attributeMatch[1].slice(1, -1),
+        raw: attributeMatch[1],
+      }
     : void 0
 
   // parse title
@@ -152,7 +161,9 @@ export function parseOpenTag(raw: string, prevNode?: ChildrenNode | CustomContai
     raw,
     value,
     title,
-    ...(attrs ? { attribute: attrs } : {}),
+    ...(attrs
+      ? { attribute: attrs }
+      : {}),
     position: { start: offset, end: offset + raw.length },
   }
 }

@@ -28,7 +28,11 @@ export default createRule<Options, MessageIds>({
       unexpected: 'Unexpected blank lines around a custom container.',
     },
     fixable: 'whitespace',
-    schema: [{ enum: ['compact', 'loose'] }],
+    schema: [
+      {
+        enum: ['compact', 'loose'],
+      },
+    ],
   },
   defaultOptions: ['loose'],
   create(context) {
